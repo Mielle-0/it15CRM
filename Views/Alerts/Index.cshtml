@@ -1,0 +1,65 @@
+@model IEnumerable<dynamic>
+@{
+    ViewData["Title"] = "Alerts & Notifications";
+}
+
+<div class="container-fluid">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">🚨 Alerts & Notifications</h2>
+        <div>
+            <button class="btn btn-outline-primary me-2"><i class="fa fa-filter"></i> Filters</button>
+            <button class="btn btn-outline-secondary"><i class="fa fa-cog"></i> Settings</button>
+        </div>
+    </div>
+
+    <!-- Alerts Table -->
+    <div class="card shadow-sm border-0 rounded-3">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table align-middle table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Date</th>
+                            <th>Game</th>
+                            <th>Severity</th>
+                            <th>Message</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var alert in Model.OrderByDescending(a => a.Date))
+                        {
+                            string severityClass = alert.Severity switch
+                            {
+                                "High" => "bg-danger text-white",
+                                "Medium" => "bg-warning text-dark",
+                                "Low" => "bg-info text-dark",
+                                _ => "bg-secondary text-white"
+                            };
+
+                            <tr>
+                                <td>@alert.Date.ToString("yyyy-MM-dd HH:mm")</td>
+                                <td>@alert.Game</td>
+                                <td>
+                                    <span class="badge @severityClass">@alert.Severity</span>
+                                </td>
+                                <td>@alert.Message</td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-success me-1">
+                                        <i class="fa fa-user-plus"></i> Assign
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger">
+                                        <i class="fa fa-times"></i> Dismiss
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,149 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+    var alerts = ViewBag.Alerts;
+    var helpful = ViewBag.Helpful;
+}
+
+<div class="container my-4">
+    <h1 class="mb-4 text-center">🎮 CRM Dashboard – Game Reviews</h1>
+
+    <!-- KPI Cards Row -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-center border-0 shadow-sm">
+                <div class="card-body">
+                    <h6>Total Reviews</h6>
+                    <h2 class="fw-bold">@ViewBag.TotalReviews</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center border-0 shadow-sm">
+                <div class="card-body">
+                    <h6>Positive %</h6>
+                    <h2 class="fw-bold text-success">75%</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center border-0 shadow-sm">
+                <div class="card-body">
+                    <h6>Negative %</h6>
+                    <h2 class="fw-bold text-danger">15%</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center border-0 shadow-sm">
+                <div class="card-body">
+                    <h6>Avg Rating</h6>
+                    <h2 class="fw-bold text-primary">4.2 ⭐</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+<!-- Charts Row -->
+<div class="row mb-4">
+    <div class="col-md-6 d-flex">
+        <div class="card shadow-sm border-0 w-100 h-100">
+            <div class="card-header bg-light fw-bold">Sentiment Distribution</div>
+            <div class="card-body d-flex align-items-center">
+                <canvas id="sentimentChart" class="w-100"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 d-flex">
+        <div class="card shadow-sm border-0 w-100 h-100">
+            <div class="card-header bg-light fw-bold">Top 5 Positive Games</div>
+            <div class="card-body d-flex align-items-center">
+                <canvas id="topGamesChart" class="w-100"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    <!-- Alerts -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-warning fw-bold">⚠️ Alerts – Declining Sentiment</div>
+        <div class="card-body">
+            <table class="table table-hover table-sm">
+                <thead class="table-light">
+                    <tr><th>Game</th><th>Prev Avg</th><th>Recent Avg</th></tr>
+                </thead>
+                <tbody>
+                @foreach (var a in ViewBag.Alerts)
+                {
+                    <tr>
+                        <td>@a.Game</td>
+                        <td>@a.PrevAvg</td>
+                        <td>@a.RecentAvg</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Helpful Reviews -->
+    <div class="card shadow-sm border-0">
+        <div class="card-header bg-success text-white fw-bold">🌟 Most Helpful Reviews</div>
+        <div class="card-body">
+            <table class="table table-hover table-sm">
+                <thead class="table-light">
+                    <tr><th>Game</th><th>Title</th><th>Votes</th></tr>
+                </thead>
+                <tbody>
+                @foreach (var r in ViewBag.Helpful)
+                {
+                    <tr>
+                        <td>@r.Game</td>
+                        <td>@r.Title</td>
+                        <td>@r.Votes</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+    // Sentiment Pie
+    new Chart(document.getElementById('sentimentChart'), {
+        type: 'pie',
+        data: {
+            labels: @Html.Raw(ViewBag.SentimentLabels),
+            datasets: [{
+                data: @Html.Raw(ViewBag.SentimentValues),
+                backgroundColor: ['#dc3545','#ffc107','#28a745']
+            }]
+        }
+    });
+
+    // Top Games Bar
+    new Chart(document.getElementById('topGamesChart'), {
+        type: 'bar',
+        data: {
+            labels: @Html.Raw(ViewBag.TopGameTitles),
+            datasets: [{
+                label: "Avg Rating",
+                data: @Html.Raw(ViewBag.TopGameRatings),
+                backgroundColor: '#0d6efd'
+            }]
+        },
+        options: {
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: { beginAtZero: true, max: 5 }
+            }
+        }
+    });
+    </script>
+}

@@ -1,0 +1,100 @@
+@{
+    ViewData["Title"] = "Reports";
+}
+
+<div class="container-fluid">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">📑 Reports</h2>
+    </div>
+
+    <!-- Prebuilt Templates -->
+    <div class="card shadow-sm border-0 rounded-3 mb-4">
+        <div class="card-body">
+            <h5 class="fw-semibold mb-3">Prebuilt Templates</h5>
+            <form asp-controller="Reports" asp-action="Generate" method="post" class="row g-3">
+                <div class="col-md-4">
+                    <select class="form-select" name="reportType" required>
+                        <option value="">Select Template...</option>
+                        <option value="Weekly">Weekly Report</option>
+                        <option value="Monthly">Monthly Report</option>
+                        <option value="Quarterly">Quarterly Report</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <select class="form-select" name="format" required>
+                        <option value="PDF">PDF</option>
+                        <option value="Excel">Excel</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-primary w-100" type="submit"><i class="fa fa-download"></i> Generate</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Custom Report Builder -->
+    <div class="card shadow-sm border-0 rounded-3 mb-4">
+        <div class="card-body">
+            <h5 class="fw-semibold mb-3">Custom Report Builder</h5>
+            <form asp-controller="Reports" asp-action="Generate" method="post" class="row g-3">
+                <input type="hidden" name="reportType" value="Custom" />
+                <div class="col-md-3">
+                    <label class="form-label">Start Date</label>
+                    <input type="date" name="startDate" class="form-control">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">End Date</label>
+                    <input type="date" name="endDate" class="form-control">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Format</label>
+                    <select class="form-select" name="format" required>
+                        <option value="PDF">PDF</option>
+                        <option value="Excel">Excel</option>
+                    </select>
+                </div>
+                <div class="col-md-3 d-flex align-items-end">
+                    <button class="btn btn-outline-primary w-100" type="submit"><i class="fa fa-cogs"></i> Build Report</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Schedule Reports -->
+    <div class="card shadow-sm border-0 rounded-3">
+        <div class="card-body">
+            <h5 class="fw-semibold mb-3">📆 Schedule Reports</h5>
+            <form asp-controller="Reports" asp-action="Schedule" method="post" class="row g-3">
+                <div class="col-md-3">
+                    <select class="form-select" name="reportType" required>
+                        <option value="Weekly">Weekly Report</option>
+                        <option value="Monthly">Monthly Report</option>
+                        <option value="Quarterly">Quarterly Report</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select" name="frequency" required>
+                        <option value="Weekly">Weekly</option>
+                        <option value="Monthly">Monthly</option>
+                        <option value="Quarterly">Quarterly</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <input type="email" name="email" class="form-control" placeholder="Recipient email" required />
+                </div>
+                <div class="col-md-3">
+                    <button class="btn btn-success w-100" type="submit"><i class="fa fa-envelope"></i> Schedule</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Alerts -->
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-info mt-4">@TempData["Message"]</div>
+    }
+</div>

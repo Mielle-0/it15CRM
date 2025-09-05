@@ -1,0 +1,98 @@
+@model IEnumerable<dynamic>
+@{
+    ViewData["Title"] = "Review Explorer";
+}
+
+<div class="container-fluid">
+
+    <!-- Filters + Search -->
+    <div class="card mb-4 shadow-sm border-0 rounded-3">
+        <div class="card-body">
+            <form class="row g-3">
+                <div class="col-md-4">
+                    <input type="text" class="form-control" placeholder="Search by keyword or reviewer..." />
+                </div>
+                <div class="col-md-2">
+                    <select class="form-select">
+                        <option value="">Sentiment</option>
+                        <option>Positive</option>
+                        <option>Neutral</option>
+                        <option>Negative</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select class="form-select">
+                        <option value="">Helpfulness</option>
+                        <option>Most Helpful</option>
+                        <option>Least Helpful</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <input type="date" class="form-control" />
+                </div>
+                <div class="col-md-2 text-end">
+                    <button type="submit" class="btn btn-primary w-100"><i class="fa fa-search"></i> Filter</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Reviews Table -->
+    <div class="card shadow-sm border-0 rounded-3">
+        <div class="card-body">
+            <h5 class="card-title fw-semibold mb-3">Reviews</h5>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Reviewer</th>
+                            <th>Content</th>
+                            <th>Sentiment</th>
+                            <th>Helpfulness</th>
+                            <th>Date</th>
+                            <th>Flag</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var review in Model)
+                        {
+                            <tr>
+                                <td>@review.Reviewer</td>
+                                <td>@review.Content</td>
+                                <td>
+                                    @if (review.Sentiment == "Positive")
+                                    {
+                                        <span class="badge bg-success">@review.Sentiment</span>
+                                    }
+                                    else if (review.Sentiment == "Negative")
+                                    {
+                                        <span class="badge bg-danger">@review.Sentiment</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">@review.Sentiment</span>
+                                    }
+                                </td>
+                                <td><span class="badge bg-primary">@review.Helpfulness</span></td>
+                                <td>@review.Date.ToString("MMM dd, yyyy")</td>
+                                <td>
+                                    @if (review.Flagged)
+                                    {
+                                        <span class="badge bg-warning text-dark">Flagged</span>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn btn-sm btn-outline-danger">
+                                            <i class="fa fa-flag"></i> Flag
+                                        </button>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>

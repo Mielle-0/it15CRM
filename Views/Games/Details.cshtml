@@ -1,0 +1,125 @@
+@model dynamic
+@{
+    ViewData["Title"] = "Game Details";
+}
+
+<div class="container-fluid">
+
+    <!-- Game Info -->
+    <div class="card mb-4 shadow-sm border-0 rounded-3">
+        <div class="card-body">
+            <h3 class="card-title fw-bold text-primary">@Model.AppName</h3>
+            <p class="text-muted mb-1"><strong>Genre:</strong> @Model.Genre</p>
+            <p><strong>Release Date:</strong> @Model.ReleaseDate.ToString("MMMM dd, yyyy")</p>
+            <p><strong>Total Reviews:</strong> @Model.ReviewCount</p>
+        </div>
+    </div>
+
+    <!-- Sentiment Overview -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card text-center shadow-sm border-0 rounded-3">
+                <div class="card-body">
+                    <h5 class="fw-semibold">Average Sentiment</h5>
+                    <p class="display-6 text-primary">@Model.AvgSentiment</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center shadow-sm border-0 rounded-3">
+                <div class="card-body">
+                    <h5 class="fw-semibold">Recommended</h5>
+                    <p class="display-6 text-success">@Model.RecommendedPct%</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center shadow-sm border-0 rounded-3">
+                <div class="card-body">
+                    <h5 class="fw-semibold">Not Recommended</h5>
+                    <p class="display-6 text-danger">@Model.NotRecommendedPct%</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart Placeholder -->
+    <div class="card mb-4 shadow-sm border-0 rounded-3">
+        <div class="card-body">
+            <h5 class="card-title fw-semibold">📈 Sentiment Trend Over Time</h5>
+            <div class="bg-light border rounded d-flex justify-content-center align-items-center" style="height:300px;">
+                <span class="text-muted">[Chart Placeholder]</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reviews Section -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4 shadow-sm border-0 rounded-3">
+                <div class="card-body">
+                    <h5 class="card-title text-success fw-semibold">😊 Top Positive Reviews</h5>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">“Amazing gameplay and storyline!”</li>
+                        <li class="list-group-item">“Best RPG I’ve played this year.”</li>
+                        <li class="list-group-item">“Graphics are beautiful and immersive.”</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card mb-4 shadow-sm border-0 rounded-3">
+                <div class="card-body">
+                    <h5 class="card-title text-danger fw-semibold">😞 Top Negative Reviews</h5>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">“Too many bugs at launch.”</li>
+                        <li class="list-group-item">“Combat system feels clunky.”</li>
+                        <li class="list-group-item">“Needs better multiplayer balance.”</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Word Cloud -->
+    <div class="card mb-4 shadow-sm border-0 rounded-3">
+        <div class="card-body">
+            <h5 class="card-title fw-semibold">☁️ Frequent Review Terms</h5>
+            <div class="bg-light border rounded d-flex justify-content-center align-items-center" style="height:200px;">
+                <span class="text-muted">[Word Cloud Placeholder]</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Most Helpful -->
+    <div class="card shadow-sm border-0 rounded-3">
+        <div class="card-body">
+            <h5 class="card-title fw-semibold">👍 Most Helpful Reviews</h5>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Review</th>
+                            <th>Votes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>“Fantastic game with deep mechanics.”</td>
+                            <td><span class="badge bg-primary">124</span></td>
+                        </tr>
+                        <tr>
+                            <td>“Needs optimization but still fun.”</td>
+                            <td><span class="badge bg-primary">87</span></td>
+                        </tr>
+                        <tr>
+                            <td>“Not my type, but has potential.”</td>
+                            <td><span class="badge bg-primary">45</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>

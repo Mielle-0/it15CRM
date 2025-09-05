@@ -1,0 +1,61 @@
+@model IEnumerable<dynamic>
+@{
+    ViewData["Title"] = "Influential Reviewers";
+}
+
+<div class="container-fluid">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">🌟 Influential Reviewers</h2>
+        <button class="btn btn-success">
+            <i class="fa fa-download"></i> Export Contacts
+        </button>
+    </div>
+
+    <!-- Leaderboard Table -->
+    <div class="card shadow-sm border-0 rounded-3">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Rank</th>
+                            <th>Reviewer</th>
+                            <th>Total Influence (Votes)</th>
+                            <th>Sentiment Breakdown</th>
+                            <th>Email</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            var rank = 1;
+                            foreach (var reviewer in Model.OrderByDescending(r => r.TotalVotes))
+                            {
+                                <tr>
+                                    <td>
+                                        <span class="fw-bold">#@rank</span>
+                                    </td>
+                                    <td>@reviewer.Name</td>
+                                    <td>
+                                        <span class="badge bg-primary fs-6">@reviewer.TotalVotes</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-success me-1">+@reviewer.PositiveReviews</span>
+                                        <span class="badge bg-secondary me-1">~@reviewer.NeutralReviews</span>
+                                        <span class="badge bg-danger">-@reviewer.NegativeReviews</span>
+                                    </td>
+                                    <td>
+                                        <a href="mailto:@reviewer.Email" class="text-decoration-none">@reviewer.Email</a>
+                                    </td>
+                                </tr>
+                                rank++;
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>

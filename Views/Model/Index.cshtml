@@ -1,0 +1,79 @@
+@model dynamic
+@{
+    ViewData["Title"] = "Model Management";
+}
+
+<div class="container-fluid">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">🧠 Model Management</h2>
+    </div>
+
+    <!-- Upload Model -->
+    <div class="card shadow-sm border-0 rounded-3 mb-4">
+        <div class="card-body">
+            <h5 class="fw-semibold mb-3">Upload New Model</h5>
+            <form asp-controller="Model" asp-action="Upload" method="post" enctype="multipart/form-data">
+                <div class="input-group mb-3">
+                    <input type="file" name="modelFile" class="form-control">
+                    <button class="btn btn-primary" type="submit"><i class="fa fa-upload"></i> Upload</button>
+                </div>
+            </form>
+            @if (TempData["Message"] != null)
+            {
+                <div class="alert alert-info mt-2">@TempData["Message"]</div>
+            }
+        </div>
+    </div>
+
+    <!-- Model Metrics -->
+    <div class="card shadow-sm border-0 rounded-3 mb-4">
+        <div class="card-body">
+            <h5 class="fw-semibold mb-3">📊 Current Model Performance</h5>
+            <p><strong>Version:</strong> @Model.Version</p>
+            <ul class="list-group list-group-horizontal">
+                <li class="list-group-item flex-fill text-center">
+                    <h6>Precision</h6>
+                    <span class="fw-bold text-success">@((Model.Precision * 100).ToString("F1"))%</span>
+                </li>
+                <li class="list-group-item flex-fill text-center">
+                    <h6>Recall</h6>
+                    <span class="fw-bold text-primary">@((Model.Recall * 100).ToString("F1"))%</span>
+                </li>
+                <li class="list-group-item flex-fill text-center">
+                    <h6>F1 Score</h6>
+                    <span class="fw-bold text-warning">@((Model.F1 * 100).ToString("F1"))%</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Test Model -->
+    <div class="card shadow-sm border-0 rounded-3">
+        <div class="card-body">
+            <h5 class="fw-semibold mb-3">🔬 Test Model with Sample Data</h5>
+            <div class="input-group mb-3">
+                <input type="text" id="sampleText" class="form-control" placeholder="Enter sample review text...">
+                <button id="testBtn" class="btn btn-outline-primary"><i class="fa fa-play"></i> Test</button>
+            </div>
+            <div id="testResult" class="alert d-none"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Ajax Script -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $("#testBtn").click(function () {
+        var text = $("#sampleText").val();
+        if (text.trim() === "") return;
+
+        $.post("/Model/Test", { sampleText: text }, function (data) {
+            $("#testResult")
+                .removeClass("d-none alert-success alert-danger")
+                .addClass(data.Prediction === "Positive" ? "alert-success" : "alert-danger")
+                .html("<b>Prediction:</b> " + data.Prediction + " (" + (data.Confidence * 100).toFixed(1) + "% confidence)");
+        });
+    });
+</script>

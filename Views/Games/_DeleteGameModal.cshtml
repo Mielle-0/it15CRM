@@ -1,0 +1,16 @@
+@model Game
+
+<div class="modal-header">
+    <h5 class="modal-title">Delete Game</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+</div>
+<div class="modal-body">
+    <p>Are you sure you want to delete <strong>@Model.AppName</strong>?</p>
+</div>
+<div class="modal-footer">
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="GameId" />
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-danger">Delete</button>
+    </form>
+</div>

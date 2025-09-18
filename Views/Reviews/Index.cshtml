@@ -1,4 +1,4 @@
-@model IEnumerable<dynamic>
+@model IEnumerable<ReviewOverview>
 @{
     ViewData["Title"] = "Review Explorer";
 }
@@ -8,30 +8,32 @@
     <!-- Filters + Search -->
     <div class="card mb-4 shadow-sm border-0 rounded-3">
         <div class="card-body">
-            <form class="row g-3">
+            <form class="row g-3" method="get" asp-action="Index">
                 <div class="col-md-4">
-                    <input type="text" class="form-control" placeholder="Search by keyword or reviewer..." />
+                    <input type="text" 
+                        class="form-control" 
+                        name="searchTerm"
+                        value="@Context.Request.Query["searchTerm"]"
+                        placeholder="Search by reviewer or keyword..." />
                 </div>
                 <div class="col-md-2">
-                    <select class="form-select">
+                    <select class="form-select" name="sentiment">
                         <option value="">Sentiment</option>
-                        <option>Positive</option>
-                        <option>Neutral</option>
-                        <option>Negative</option>
+                        <option value="Positive" selected="@(Context.Request.Query["sentiment"] == "Positive")">Positive</option>
+                        <option value="Neutral" selected="@(Context.Request.Query["sentiment"] == "Neutral")">Neutral</option>
+                        <option value="Negative" selected="@(Context.Request.Query["sentiment"] == "Negative")">Negative</option>
                     </select>
                 </div>
                 <div class="col-md-2">
-                    <select class="form-select">
-                        <option value="">Helpfulness</option>
-                        <option>Most Helpful</option>
-                        <option>Least Helpful</option>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <input type="date" class="form-control" />
+                    <input type="date" 
+                        class="form-control" 
+                        name="date"
+                        value="@Context.Request.Query["date"]" />
                 </div>
                 <div class="col-md-2 text-end">
-                    <button type="submit" class="btn btn-primary w-100"><i class="fa fa-search"></i> Filter</button>
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fa fa-search"></i> Filter
+                    </button>
                 </div>
             </form>
         </div>
@@ -40,59 +42,153 @@
     <!-- Reviews Table -->
     <div class="card shadow-sm border-0 rounded-3">
         <div class="card-body">
-            <h5 class="card-title fw-semibold mb-3">Reviews</h5>
+            
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="card-title fw-semibold mb-0">Reviews Overview</h5>
+                <a asp-action="Create" data-bs-toggle="ajax-modal" class="btn btn-success">
+                    <i class="fa fa-plus"></i> Add Review
+                </a>
+            </div>
+
             <div class="table-responsive">
                 <table class="table table-hover align-middle">
                     <thead class="table-light">
                         <tr>
-                            <th>Reviewer</th>
-                            <th>Content</th>
+                            <th>Game</th>
+                            <th>Review (Excerpt)</th>
                             <th>Sentiment</th>
-                            <th>Helpfulness</th>
+                            <th>Confidence</th>
+                            <th>Source</th>
                             <th>Date</th>
-                            <th>Flag</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var review in Model)
                         {
                             <tr>
-                                <td>@review.Reviewer</td>
-                                <td>@review.Content</td>
+                                <!-- Game name -->
+                                <td>@review.AppName</td>
+
+                                <!-- Excerpt of review -->
+                                <td>
+                                    @if (!string.IsNullOrEmpty(review.ReviewText) && review.ReviewText.Length > 60)
+                                    {
+                                        @($"{review.ReviewText.Substring(0, 60)}...")
+                                    }
+                                    else
+                                    {
+                                        @review.ReviewText
+                                    }
+                                </td>
+
+                                <!-- Sentiment -->
                                 <td>
                                     @if (review.Sentiment == "Positive")
                                     {
-                                        <span class="badge bg-success">@review.Sentiment</span>
+                                        <span class="badge bg-success">Positive</span>
                                     }
                                     else if (review.Sentiment == "Negative")
                                     {
-                                        <span class="badge bg-danger">@review.Sentiment</span>
+                                        <span class="badge bg-danger">Negative</span>
                                     }
                                     else
                                     {
-                                        <span class="badge bg-secondary">@review.Sentiment</span>
+                                        <span class="badge bg-secondary">Neutral</span>
                                     }
                                 </td>
-                                <td><span class="badge bg-primary">@review.Helpfulness</span></td>
-                                <td>@review.Date.ToString("MMM dd, yyyy")</td>
+
+                                <!-- Confidence score -->
+                                <td>@review.SentimentConfidence</td>
+
+                                <!-- Source (from Games table) -->
+                                <td>@review.Source</td>
+
+                                <!-- Review Date -->
+                                <td>@review.ReviewDate?.ToString("MMM dd, yyyy")</td>
+
+                                <!-- ACtion buttons -->
                                 <td>
-                                    @if (review.Flagged)
-                                    {
-                                        <span class="badge bg-warning text-dark">Flagged</span>
-                                    }
-                                    else
-                                    {
-                                        <button class="btn btn-sm btn-outline-danger">
-                                            <i class="fa fa-flag"></i> Flag
-                                        </button>
-                                    }
+                                    <a asp-action="Details" asp-route-id="@review.ReviewId"
+                                        data-bs-toggle="ajax-modal"
+                                        class="btn btn-sm btn-outline-primary">
+                                        View
+                                    </a>
+                                    <a asp-action="Edit" asp-route-id="@review.ReviewId" 
+                                        data-bs-toggle="ajax-modal"
+                                        class="btn btn-sm btn-outline-warning ms-2">
+                                        Edit
+                                    </a>
                                 </td>
+
                             </tr>
                         }
                     </tbody>
                 </table>
             </div>
+
+            <!-- Pagination Controls -->
+            <div class="d-flex justify-content-between align-items-center mt-3">
+                <div>
+                    Page @ViewBag.Page of @((int)Math.Ceiling((double)ViewBag.TotalCount / ViewBag.PageSize))
+                    (Total: @ViewBag.TotalCount reviews)
+                </div>
+                <nav>
+                    <ul class="pagination mb-0">
+                        @if (ViewBag.Page > 1)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" asp-action="Index" asp-route-page="@(ViewBag.Page - 1)"
+                                    asp-route-searchTerm="@Context.Request.Query["searchTerm"]"
+                                    asp-route-sentiment="@Context.Request.Query["sentiment"]"
+                                    asp-route-recommendation="@Context.Request.Query["recommendation"]"
+                                    asp-route-date="@Context.Request.Query["date"]">>
+                                    Previous
+                                </a>
+                            </li>
+                        }
+
+                        <li class="page-item active">
+                            <span class="page-link">@ViewBag.Page</span>
+                        </li>
+
+                        @if ((ViewBag.Page * ViewBag.PageSize) < ViewBag.TotalCount)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" asp-action="Index" asp-route-page="@(ViewBag.Page + 1)"
+                                    asp-route-searchTerm="@Context.Request.Query["searchTerm"]"
+                                    asp-route-sentiment="@Context.Request.Query["sentiment"]"
+                                    asp-route-recommendation="@Context.Request.Query["recommendation"]"
+                                    asp-route-date="@Context.Request.Query["date"]">>
+                                    Next
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </nav>
+            </div>
         </div>
     </div>
-
 </div>
+
+<!-- Modal Container -->
+<div class="modal fade" id="modalContainer" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content"></div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).on("click", "[data-bs-toggle='ajax-modal']", function (e) {
+            e.preventDefault();
+            var url = $(this).attr("href");
+            $.get(url).done(function (data) {
+                $("#modalContainer .modal-content").html(data);
+                var modal = new bootstrap.Modal(document.getElementById("modalContainer"));
+                modal.show();
+            });
+        });
+    </script>
+}
+

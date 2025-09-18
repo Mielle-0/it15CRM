@@ -5,7 +5,6 @@
 }
 
 <div class="container my-4">
-    <h1 class="mb-4 text-center">🎮 CRM Dashboard – Game Reviews</h1>
 
     <!-- KPI Cards Row -->
     <div class="row mb-4">
@@ -21,7 +20,7 @@
             <div class="card text-center border-0 shadow-sm">
                 <div class="card-body">
                     <h6>Positive %</h6>
-                    <h2 class="fw-bold text-success">75%</h2>
+                    <h2 class="fw-bold text-success">@ViewBag.PositivePct.ToString("F1")%</h2>
                 </div>
             </div>
         </div>
@@ -29,7 +28,7 @@
             <div class="card text-center border-0 shadow-sm">
                 <div class="card-body">
                     <h6>Negative %</h6>
-                    <h2 class="fw-bold text-danger">15%</h2>
+                    <h2 class="fw-bold text-danger">@ViewBag.NegativePct.ToString("F1")%</h2>
                 </div>
             </div>
         </div>
@@ -37,33 +36,31 @@
             <div class="card text-center border-0 shadow-sm">
                 <div class="card-body">
                     <h6>Avg Rating</h6>
-                    <h2 class="fw-bold text-primary">4.2 ⭐</h2>
+                    <h2 class="fw-bold text-primary">@ViewBag.AvgRating.ToString("F1") ⭐</h2>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Charts Row -->
-<!-- Charts Row -->
-<div class="row mb-4">
-    <div class="col-md-6 d-flex">
-        <div class="card shadow-sm border-0 w-100 h-100">
-            <div class="card-header bg-light fw-bold">Sentiment Distribution</div>
-            <div class="card-body d-flex align-items-center">
-                <canvas id="sentimentChart" class="w-100"></canvas>
+    <div class="row mb-4">
+        <div class="col-md-6 d-flex">
+            <div class="card shadow-sm border-0 w-100 h-100">
+                <div class="card-header bg-light fw-bold">Sentiment Distribution</div>
+                <div class="card-body d-flex align-items-center">
+                    <canvas id="sentimentChart" class="w-100"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 d-flex">
+            <div class="card shadow-sm border-0 w-100 h-100">
+                <div class="card-header bg-light fw-bold">Top 5 Positive Games</div>
+                <div class="card-body d-flex align-items-center">
+                    <canvas id="topGamesChart" class="w-100"></canvas>
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-md-6 d-flex">
-        <div class="card shadow-sm border-0 w-100 h-100">
-            <div class="card-header bg-light fw-bold">Top 5 Positive Games</div>
-            <div class="card-body d-flex align-items-center">
-                <canvas id="topGamesChart" class="w-100"></canvas>
-            </div>
-        </div>
-    </div>
-</div>
-
 
     <!-- Alerts -->
     <div class="card shadow-sm border-0 mb-4">

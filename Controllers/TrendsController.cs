@@ -1,30 +1,122 @@
 using Microsoft.AspNetCore.Mvc;
+using AmazonReviewsCRM.Data;
+using AmazonReviewsCRM.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace AmazonReviewsCRM.Controllers
 {
     public class TrendsController : Controller
     {
-        // GET: /Trends
-        public IActionResult Index()
+        private readonly AppDbContext _context;
+
+        public TrendsController(AppDbContext context)
         {
-            // Mock sentiment data for multiple games
-            var sentimentData = new
+            _context = context;
+        }
+
+        // GET: /Trends
+        public async Task<IActionResult> Index(
+            string? searchApp,
+            string? startDate,
+            string? endDate,
+            double? minSentiment,
+            int? minReviews)
+        {
+            var query = _context.ViewSentimentTrends.AsNoTracking();
+
+            // Default: last 3 months + current
+            var defaultStart = DateTime.UtcNow.AddMonths(-3);
+            var defaultEnd = DateTime.UtcNow;
+
+            // Parse date range (YearMonth is string "yyyy-MM")
+            var start = !string.IsNullOrEmpty(startDate)
+                ? DateTime.Parse(startDate + "-01")
+                : defaultStart;
+            var end = !string.IsNullOrEmpty(endDate)
+                ? DateTime.Parse(endDate + "-01").AddMonths(1).AddDays(-1) // last day of month
+                : defaultEnd;
+
+            // Apply filters
+            if (!string.IsNullOrEmpty(searchApp))
             {
-                Labels = new[] { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul" },
-                Games = new[]
+                query = query.Where(t => t.AppName.Contains(searchApp));
+            }
+
+            query = query.Where(t =>
+                string.Compare(t.YearMonth, start.ToString("yyyy-MM")) >= 0 &&
+                string.Compare(t.YearMonth, end.ToString("yyyy-MM")) <= 0);
+
+            if (minSentiment.HasValue)
+            {
+                query = query.Where(t => t.AvgSentiment >= minSentiment.Value);
+            }
+
+            if (minReviews.HasValue && minReviews.Value > 0)
+            {
+                query = query.Where(t => t.ReviewCount >= minReviews.Value);
+            }
+
+            var trends = await query
+                .OrderBy(t => t.YearMonth)
+                .ToListAsync();
+
+            if (!trends.Any())
+            {
+                return View(new SentimentTrendsViewModel());
+            }
+
+            // Build labels (months)
+            var labels = trends
+                .Select(t => t.YearMonth)
+                .Distinct()
+                .OrderBy(m => m)
+                .ToList();
+
+            // Group by game
+            var games = trends
+                .GroupBy(t => t.AppName)
+                .Select(g => new GameSentiment
                 {
-                    new { Name = "Space Explorer", Sentiments = new[] { 0.75, 0.80, 0.78, 0.82, 0.70, 0.65, 0.72 } },
-                    new { Name = "Farm Tycoon", Sentiments = new[] { 0.60, 0.58, 0.65, 0.68, 0.70, 0.66, 0.63 } },
-                    new { Name = "Dungeon Quest", Sentiments = new[] { 0.45, 0.50, 0.55, 0.48, 0.40, 0.42, 0.44 } }
-                },
-                Anomalies = new[]
+                    Name = g.Key,
+                    Sentiments = labels.Select(month =>
+                        g.FirstOrDefault(x => x.YearMonth == month)?.AvgSentiment ?? 0
+                    ).ToList()
+                })
+                .ToList();
+
+            // Detect anomalies
+            var anomalies = new List<AnomalyViewModel>();
+            foreach (var game in games)
+            {
+                for (int i = 1; i < game.Sentiments.Count; i++)
                 {
-                    new { Game = "Space Explorer", Month = "Jun", Value = 0.65, Note = "Post-launch bug reports" },
-                    new { Game = "Dungeon Quest", Month = "Mar", Value = 0.55, Note = "Big patch boosted reviews" }
+                    var prev = game.Sentiments[i - 1];
+                    var curr = game.Sentiments[i];
+                    if (Math.Abs(curr - prev) >= 0.3)
+                    {
+                        anomalies.Add(new AnomalyViewModel
+                        {
+                            Game = game.Name,
+                            Month = labels[i],
+                            Value = curr,
+                            Note = curr > prev ? "Spike detected" : "Drop detected"
+                        });
+                    }
                 }
+            }
+
+            var viewModel = new SentimentTrendsViewModel
+            {
+                Labels = labels,
+                Games = games,
+                Anomalies = anomalies
             };
 
-            return View(sentimentData);
+            return View(viewModel);
         }
+
+
+
+
     }
 }

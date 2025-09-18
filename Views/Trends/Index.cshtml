@@ -36,10 +36,69 @@
 
 <div class="container-fluid">
 
-    <!-- Page Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold">📈 Sentiment Trends Across Games</h2>
+    <!-- Filters + Search -->
+    <div class="card mb-4 shadow-sm border-0 rounded-3">
+        <div class="card-body">
+            <form class="row g-3 align-items-end" method="get" asp-action="Index">
+
+                <!-- Search App Name -->
+                <div class="col-md-3">
+                    <label class="form-label">App Name</label>
+                    <input type="text"
+                        class="form-control"
+                        name="searchApp"
+                        value="@Context.Request.Query["searchApp"]"
+                        placeholder="Search by app name..." />
+                </div>
+
+                <!-- Date Range -->
+                <div class="col-md-3">
+                    <label class="form-label">Start Date</label>
+                    <input type="month"
+                        class="form-control"
+                        name="startDate"
+                        value="@Context.Request.Query["startDate"]" />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">End Date</label>
+                    <input type="month"
+                        class="form-control"
+                        name="endDate"
+                        value="@Context.Request.Query["endDate"]" />
+                </div>
+
+                <!-- Sentiment Range Slider -->
+                <div class="col-md-3">
+                    <label class="form-label">Min Sentiment</label>
+                    <input type="range"
+                        class="form-range"
+                        name="minSentiment"
+                        min="0" max="1" step="0.05"
+                        value="@Context.Request.Query["minSentiment"].FirstOrDefault() ?? "0""
+                        oninput="this.nextElementSibling.value = this.value" />
+                    <output>@(Context.Request.Query["minSentiment"].FirstOrDefault() ?? "0")</output>
+                </div>
+
+                <!-- Review Count Filter -->
+                <div class="col-md-3">
+                    <label class="form-label">Min Reviews</label>
+                    <input type="number"
+                        class="form-control"
+                        name="minReviews"
+                        value="@Context.Request.Query["minReviews"].FirstOrDefault() ?? "0""
+                        min="0" />
+                </div>
+
+                <!-- Submit Button -->
+                <div class="col-md-2 text-end">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fa fa-search"></i> Filter
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
+
 
     <!-- Chart Card -->
     <div class="card shadow-sm border-0 rounded-3 mb-4">

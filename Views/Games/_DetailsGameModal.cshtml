@@ -1,0 +1,39 @@
+@model Game
+
+<div class="modal-header">
+    <h5 class="modal-title">Game Details</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+</div>
+
+<div class="modal-body">
+    <h6 class="border-bottom pb-2">Game Information</h6>
+    <dl class="row">
+        <dt class="col-sm-3">App ID</dt>
+        <dd class="col-sm-9">@Model.AppId</dd>
+
+        <dt class="col-sm-3">Game Name</dt>
+        <dd class="col-sm-9">@Model.AppName</dd>
+
+        <dt class="col-sm-3">Genre</dt>
+        <dd class="col-sm-9">@Model.Genre</dd>
+
+        <dt class="col-sm-3">Release Date</dt>
+        <dd class="col-sm-9">@Model.ReleaseDate?.ToString("MMM dd, yyyy")</dd>
+
+        <dt class="col-sm-3">Developer</dt>
+        <dd class="col-sm-9">@Model.Developer</dd>
+
+        <dt class="col-sm-3">Publisher</dt>
+        <dd class="col-sm-9">@Model.Publisher</dd>
+
+        <dt class="col-sm-3">Source</dt>
+        <dd class="col-sm-9">@Model.Source</dd>
+
+        <dt class="col-sm-3">Description</dt>
+        <dd class="col-sm-9">@Model.Description</dd>
+    </dl>
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+</div>

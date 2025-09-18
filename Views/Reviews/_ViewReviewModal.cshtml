@@ -1,0 +1,92 @@
+@model ReviewDetailViewModel
+
+<div class="modal-header">
+    <h5 class="modal-title">Review Details</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+</div>
+
+<div class="modal-body">
+    <!-- Game Overview -->
+    <h6 class="border-bottom pb-2">Game Overview</h6>
+    <dl class="row">
+        <dt class="col-sm-3">Game</dt>
+        <dd class="col-sm-9">@Model.AppName</dd>
+
+        <dt class="col-sm-3">Genre</dt>
+        <dd class="col-sm-9">@Model.Genre</dd>
+
+        <dt class="col-sm-3">Release Date</dt>
+        <dd class="col-sm-9">@Model.ReleaseDate?.ToString("MMM dd, yyyy")</dd>
+
+        <dt class="col-sm-3">Developer</dt>
+        <dd class="col-sm-9">@Model.Developer</dd>
+
+        <dt class="col-sm-3">Publisher</dt>
+        <dd class="col-sm-9">@Model.Publisher</dd>
+
+        <dt class="col-sm-3">Source</dt>
+        <dd class="col-sm-9">@Model.Source</dd>
+    </dl>
+
+    <!-- Review Details -->
+    <h6 class="border-bottom pb-2 mt-3">Review</h6>
+    <dl class="row">
+        <dt class="col-sm-3">Reviewer</dt>
+        <dd class="col-sm-9">@Model.ReviewerId</dd>
+
+        <dt class="col-sm-3">Date</dt>
+        <dd class="col-sm-9">@Model.ReviewDate?.ToString("MMM dd, yyyy")</dd>
+
+        <dt class="col-sm-3">Score</dt>
+        <dd class="col-sm-9">@Model.ReviewScoreNumeric</dd>
+
+        <dt class="col-sm-3">Recommendation</dt>
+        <dd class="col-sm-9">
+            @if (Model.ReviewRecommendation == true)
+            {
+                <span class="badge bg-success">Recommended</span>
+            }
+            else if (Model.ReviewRecommendation == false)
+            {
+                <span class="badge bg-danger">Not Recommended</span>
+            }
+            else
+            {
+                <span class="badge bg-secondary">N/A</span>
+            }
+        </dd>
+
+        <dt class="col-sm-3">Votes</dt>
+        <dd class="col-sm-9">@Model.ReviewVotes</dd>
+
+        <dt class="col-sm-3">Review Text</dt>
+        <dd class="col-sm-9">@Model.ReviewText</dd>
+    </dl>
+
+    <!-- Sentiment -->
+    <h6 class="border-bottom pb-2 mt-3">Sentiment</h6>
+    <dl class="row">
+        <dt class="col-sm-3">Predicted</dt>
+        <dd class="col-sm-9">
+            @if (Model.PredictedSentiment == "Positive")
+            {
+                <span class="badge bg-success">Positive</span>
+            }
+            else if (Model.PredictedSentiment == "Negative")
+            {
+                <span class="badge bg-danger">Negative</span>
+            }
+            else
+            {
+                <span class="badge bg-secondary">Neutral</span>
+            }
+        </dd>
+
+        <dt class="col-sm-3">Confidence</dt>
+        <dd class="col-sm-9">@Model.ConfidenceScore</dd>
+    </dl>
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+</div>

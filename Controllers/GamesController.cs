@@ -1,35 +1,227 @@
 using Microsoft.AspNetCore.Mvc;
+using AmazonReviewsCRM.Data;
+using AmazonReviewsCRM.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace AmazonReviewsCRM.Controllers
 {
     public class GamesController : Controller
     {
-        // ✅ Declare the hardcoded game list as a class field
-        private readonly List<dynamic> _games = new()
-        {
-            new { AppId = 1001, AppName = "Space Explorer", Genre="Action", AvgSentiment = 0.82, RecommendedPct = 90, NotRecommendedPct = 10, ReviewCount = 1200, ReleaseDate = new DateTime(2023, 1, 15) },
-            new { AppId = 1002, AppName = "Farm Tycoon", Genre="Simulation", AvgSentiment = 0.65, RecommendedPct = 70, NotRecommendedPct = 30, ReviewCount = 850, ReleaseDate = new DateTime(2022, 5, 2) },
-            new { AppId = 1003, AppName = "Dungeon Quest", Genre="RPG", AvgSentiment = 0.45, RecommendedPct = 40, NotRecommendedPct = 60, ReviewCount = 400, ReleaseDate = new DateTime(2021, 11, 20) },
-            new { AppId = 1004, AppName = "City Builder Pro", Genre="Strategy", AvgSentiment = 0.78, RecommendedPct = 85, NotRecommendedPct = 15, ReviewCount = 2100, ReleaseDate = new DateTime(2024, 3, 10) },
-            new { AppId = 1005, AppName = "Racing Xtreme", Genre="Racing", AvgSentiment = 0.72, RecommendedPct = 75, NotRecommendedPct = 25, ReviewCount = 1300, ReleaseDate = new DateTime(2023, 7, 18) },
-        };
+        private readonly AppDbContext _context;
 
-        // GET: /Games
-        public IActionResult Index()
+        public GamesController(AppDbContext context)
         {
-            return View(_games);
+            _context = context;
         }
 
-        // GET: /Games/Details/{id}
-        public IActionResult Details(int id)
+        // GET: /Games
+        public IActionResult Index(string sentiment, string searchTerm, DateTime? date, int page = 1)
         {
-            var game = _games.FirstOrDefault(g => g.AppId == id);
+            var query = _context.ViewGameList.AsQueryable();
+
+            // Search
+            if (!string.IsNullOrEmpty(searchTerm))
+                query = query.Where(g => g.AppName.Contains(searchTerm) || g.AppId.Contains(searchTerm));
+
+            // Sentiment
+            if (!string.IsNullOrEmpty(sentiment))
+            {
+                if (sentiment == "Positive") query = query.Where(g => g.AvgSentiment >= 0.3m);
+                else if (sentiment == "Negative") query = query.Where(g => g.AvgSentiment <= -0.3m);
+                else query = query.Where(g => g.AvgSentiment > -0.3m && g.AvgSentiment < 0.3m);
+            }
+
+            // Date
+            if (date.HasValue)
+                query = query.Where(g => g.ReleaseDate.HasValue && g.ReleaseDate.Value.Date == date.Value.Date);
+
+            // Pagination
+            var totalItems = query.Count();
+            var items = query.OrderBy(g => g.AppName)
+                             .Skip((page - 1) * 10)
+                             .Take(10)
+                             .ToList();
+
+            var model = new PagedResult<ViewGameList>
+            {
+                Items = items,
+                PageNumber = page,
+                PageSize = 10,
+                TotalItems = totalItems
+            };
+
+            ViewBag.Genres = _context.ViewGameList.Select(g => g.Genre).Distinct().ToList();
+            ViewBag.Sources = _context.ViewGameList.Select(g => g.Source).Distinct().ToList();
+
+            return View(model);
+        }
+
+
+
+        // GET: Games/Details/5
+        public async Task<IActionResult> Details(int id)
+        {
+            var game = await _context.Games.FindAsync(id);
             if (game == null)
             {
                 return NotFound();
             }
 
-            return View(game);
+            return PartialView("_DetailsGameModal", game);
         }
+
+
+
+        public IActionResult Create()
+        {
+            return PartialView("_CreateGameModal");
+        }
+
+
+        // POST: Games/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(Game game)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Games.Add(game);
+                _context.SaveChanges();
+                return Json(new { success = true });
+            }
+            return PartialView("_CreateGameModal", game);
+        }
+
+
+        // GET: Games/Edit/5
+        public async Task<IActionResult> Edit(int id)
+        {
+            var game = await _context.Games.FindAsync(id);
+            if (game == null)
+            {
+                return NotFound();
+            }
+
+            return PartialView("_EditGameModal", game);
+        }
+
+
+        // POST: Games/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, Game game)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(game);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!_context.Games.Any(e => e.GameId == id))
+                        return NotFound();
+                    throw;
+                }
+            }
+
+            return PartialView("_EditGameModal", game);
+        }
+
+
+
+        // GET: Games/Delete/5
+        public async Task<IActionResult> Delete(int id)
+        {
+            var game = await _context.Games.FindAsync(id);
+            if (game == null)
+                return NotFound();
+
+            return PartialView("_DeleteGameModal", game); // create this view
+        }
+
+
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int GameId)
+        {
+            try
+            {
+
+
+                // Reload from DB to ensure navigation properties are included
+                var gameEntity = await _context.Games
+                    .Include(g => g.Reviews)
+                        .ThenInclude(r => r.Sentiments)
+                    .FirstOrDefaultAsync(g => g.GameId == GameId);
+
+                if (gameEntity == null)
+                    return NotFound();
+
+                // 2. Copy the game into ArchivedGames
+                var archivedGame = new ArchivedGame
+                {
+                    OriginalGameId = gameEntity.GameId,
+                    AppId = gameEntity.AppId,
+                    AppName = gameEntity.AppName,
+                    Genre = gameEntity.Genre,
+                    ReleaseDate = gameEntity.ReleaseDate,
+                    Developer = gameEntity.Developer,
+                    Publisher = gameEntity.Publisher,
+                    Description = gameEntity.Description,
+                    Source = gameEntity.Source,
+                    ArchivedAt = DateTime.Now
+                };
+                _context.ArchivedGames.Add(archivedGame);
+
+                // 3. Copy reviews into ArchivedReviews
+                foreach (var review in gameEntity.Reviews)
+                {
+                    var archivedReview = new ArchivedReview
+                    {
+                        OriginalReviewId = review.ReviewId,
+                        ReviewText = review.ReviewText,
+                        ReviewVotes = review.ReviewVotes,
+                        ReviewDate = review.ReviewDate,
+                        ReviewerId = review.ReviewerId,
+                        ReviewScoreNumeric = review.ReviewScoreNumeric,
+                        ReviewRecommendation = review.ReviewRecommendation,
+                        OriginalGameId = review.GameId,
+                        ArchivedAt = DateTime.Now
+                    };
+                    _context.ArchivedReviews.Add(archivedReview);
+                }
+
+                // 4. Delete child entities (in correct order)
+                foreach (var review in gameEntity.Reviews)
+                {
+                    _context.ReviewSentiments.RemoveRange(review.Sentiments); // delete sentiments first
+                }
+                _context.Reviews.RemoveRange(gameEntity.Reviews); // then delete reviews
+                _context.Games.Remove(gameEntity); // finally delete the game
+
+                // 5. Commit transaction
+                await _context.SaveChangesAsync();
+                return Json(new { success = true });
+
+            }
+            catch (Exception ex)
+            {
+                // For debugging: return error details to client
+                return Json(new
+                {
+                    success = false,
+                    message = ex.Message,
+                    inner = ex.InnerException?.Message,
+                    stack = ex.StackTrace
+                });
+            }
+    
+        }
+
+ 
     }
 }

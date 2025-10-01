@@ -2,9 +2,12 @@ using Microsoft.AspNetCore.Mvc;
 using AmazonReviewsCRM.Data;
 using AmazonReviewsCRM.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using AmazonReviewsCRM.Security;
 
 namespace AmazonReviewsCRM.Controllers
 {
+    // [Authorize]
     public class GamesController : Controller
     {
         private readonly AppDbContext _context;
@@ -15,6 +18,7 @@ namespace AmazonReviewsCRM.Controllers
         }
 
         // GET: /Games
+        // [RequireRoleAccess("Games")]
         public IActionResult Index(string sentiment, string searchTerm, DateTime? date, int page = 1)
         {
             var query = _context.ViewGameList.AsQueryable();
@@ -219,9 +223,9 @@ namespace AmazonReviewsCRM.Controllers
                     stack = ex.StackTrace
                 });
             }
-    
+
         }
 
- 
+
     }
 }

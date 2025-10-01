@@ -16,6 +16,7 @@ namespace AmazonReviewsCRM.Data
         public DbSet<ArchivedGame> ArchivedGames { get; set; }
         public DbSet<ArchivedReview> ArchivedReviews { get; set; }
         public DbSet<ViewSentimentTrend> ViewSentimentTrends { get; set; }
+        public DbSet<User> Users { get; set; }
 
 
 
@@ -27,6 +28,8 @@ namespace AmazonReviewsCRM.Data
             modelBuilder.Entity<ReviewSentiment>().ToTable("ReviewSentiment");
             modelBuilder.Entity<ArchivedGame>().ToTable("ArchivedGames");
             modelBuilder.Entity<ArchivedReview>().ToTable("ArchivedReviews");
+            modelBuilder.Entity<User>().ToTable("Users");
+
 
 
             // Define primary keys explicitly
@@ -35,6 +38,7 @@ namespace AmazonReviewsCRM.Data
             modelBuilder.Entity<ReviewSentiment>().HasKey(s => s.SentimentId);
             modelBuilder.Entity<ArchivedGame>().HasKey(a => a.ArchivedGameId);
             modelBuilder.Entity<ArchivedReview>().HasKey(a => a.ArchivedReviewId);
+            modelBuilder.Entity<User>().HasKey(u => u.UserId);
 
             modelBuilder.Entity<Review>()
                 .HasOne(r => r.Game)

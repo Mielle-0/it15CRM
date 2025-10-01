@@ -2,9 +2,12 @@ using Microsoft.AspNetCore.Mvc;
 using AmazonReviewsCRM.Data;
 using AmazonReviewsCRM.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using AmazonReviewsCRM.Security;
 
 namespace AmazonReviewsCRM.Controllers
 {
+    // [Authorize]
     public class TrendsController : Controller
     {
         private readonly AppDbContext _context;
@@ -15,6 +18,7 @@ namespace AmazonReviewsCRM.Controllers
         }
 
         // GET: /Trends
+        // [RequireRoleAccess("Trends")]
         public async Task<IActionResult> Index(
             string? searchApp,
             string? startDate,
@@ -22,6 +26,7 @@ namespace AmazonReviewsCRM.Controllers
             double? minSentiment,
             int? minReviews)
         {
+
             var query = _context.ViewSentimentTrends.AsNoTracking();
 
             // Default: last 3 months + current

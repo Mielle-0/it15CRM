@@ -1,0 +1,26 @@
+@model AmazonReviewsCRM.Models.User
+
+<h2>Edit User</h2>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="UserId" />
+
+    <div class="mb-3">
+        <label>Name</label>
+        <input asp-for="Name" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label>Email</label>
+        <input asp-for="Email" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label>Role</label>
+        <input asp-for="Role" class="form-control" />
+    </div>
+    <div class="mb-3 form-check">
+        <input asp-for="Active" class="form-check-input" />
+        <label asp-for="Active" class="form-check-label">Active</label>
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>

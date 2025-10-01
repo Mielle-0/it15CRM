@@ -1,7 +1,9 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AmazonReviewsCRM.Controllers
 {
+    // [Authorize]
     public class ReviewersController : Controller
     {
         // GET: /Reviewers

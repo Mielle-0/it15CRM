@@ -2,9 +2,11 @@ using Microsoft.AspNetCore.Mvc;
 using AmazonReviewsCRM.Data;
 using Microsoft.EntityFrameworkCore;
 using AmazonReviewsCRM.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AmazonReviewsCRM.Controllers
 {
+    // [Authorize]
     public class ReviewsController : Controller
     {
         private readonly AppDbContext _context;
@@ -15,6 +17,7 @@ namespace AmazonReviewsCRM.Controllers
         }
 
         // GET: /Reviews/
+        // [RequireRoleAccess("Reviews")]
         public async Task<IActionResult> Index(
             string? searchTerm,
             string? sentiment,

@@ -1,0 +1,48 @@
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+</head>
+<body>
+    <h1>Welcome to the Dashboard</h1>
+    <button id="loadGames">Load Games</button>
+    <pre id="output"></pre>
+
+    <script>
+        document.getElementById("loadGames").addEventListener("click", async () => {
+            const token = localStorage.getItem("jwt");
+
+            if (!token) {
+                alert("You are not logged in!");
+                window.location.href = "/"; // send back to login
+                return;
+            }
+
+            try {
+                const response = await fetch("/api/games", {
+                    headers: {
+                        "Authorization": "Bearer " + token
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+                } else if (response.status === 401) {
+                    alert("Unauthorized. Please log in again.");
+                    window.location.href = "/";
+                } else {
+                    alert("Error loading games.");
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Failed to fetch games.");
+            }
+        });
+    </script>
+</body>
+</html>

@@ -2,8 +2,232 @@
     ViewData["Title"] = "Home Page";
     Layout = null;
 }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication Portal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4e73df;
+            --secondary-color: #6f42c1;
+            --light-color: #f8f9fc;
+            --dark-color: #5a5c69;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .auth-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            width: 100%;
+            max-width: 500px;
+        }
+        
+        .auth-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .auth-form-container {
+            padding: 30px;
+        }
+        
+        .form-title {
+            margin-bottom: 20px;
+            color: var(--primary-color);
+            font-weight: 700;
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--dark-color);
+        }
+        
+        .input-group {
+            position: relative;
+        }
+        
+        .input-group-text {
+            background-color: white;
+        }
+        
+        .password-toggle {
+            cursor: pointer;
+        }
+        
+        .btn-auth {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            border: none;
+            padding: 12px;
+            font-weight: 600;
+            color: white;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .btn-auth:hover {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+            color: white;
+        }
+        
+        .social-auth {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e3e6f0;
+        }
+        
+        .social-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin: 0 5px;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .fb { background-color: #3b5998; }
+        .google { background-color: #dd4b39; }
+        .twitter { background-color: #1da1f2; }
+        
+        .help-links {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .help-links a {
+            color: var(--primary-color);
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        
+        .help-links a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-header">
+            <h2>Welcome to Our Platform</h2>
+            <p class="mb-0">Sign in to access your account</p>
+        </div>
+        
+        <div class="auth-form-container">
+            <!-- Login Form -->
+            <form id="login-form" class="auth-form">
+                <h3 class="form-title">Login to Your Account</h3>
+                
+                <div class="form-group">
+                    <label for="login-username" class="form-label">Username</label>
+                    <input type="text" class="form-control" id="login-username" placeholder="Enter your username" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="login-password" class="form-label">Password</label>
+                    <div class="input-group">
+                        <input type="password" class="form-control" id="login-password" placeholder="Enter your password" required>
+                        <span class="input-group-text password-toggle">
+                            <i class="fas fa-eye"></i>
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="form-group form-check">
+                    <input type="checkbox" class="form-check-input" id="remember-me">
+                    <label class="form-check-label" for="remember-me">Remember me</label>
+                </div>
+                
+                <button type="submit" class="btn btn-auth">Login</button>
+                
+                <div class="help-links">
+                    <a href="#">Forgot Password?</a>
+                    <a href="#">Contact Support</a>
+                </div>
+            </form>
+        </div>
+    </div>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            if (localStorage.getItem("jwt")) {
+                window.location.href = "/dashboard";
+            }
+            // Password visibility toggle
+            const passwordToggle = document.querySelector('.password-toggle');
+            passwordToggle.addEventListener('click', function() {
+                const input = this.parentElement.querySelector('input');
+                const icon = this.querySelector('i');
+                
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                } else {
+                    input.type = 'password';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
+            });
+            
+            // Form submission
+            document.getElementById('login-form').addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                const email = document.getElementById('login-username').value;
+                const password = document.getElementById('login-password').value;
+
+                try {
+                    const response = await fetch('/api/auth/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, password })
+                    });
+
+                    if (response.ok) {
+                        const result = await response.json();
+
+                        // Save the JWT in localStorage
+                        localStorage.setItem("jwt", result.token);
+
+                        // Redirect to dashboard or another page
+                        window.location.href = "/dashboard"; 
+                    } else {
+                        alert("Invalid email or password");
+                    }
+                } catch (error) {
+                    console.error(error);
+                    alert("Something went wrong. Please try again.");
+                }
+            });
+
+        });
+    </script>
+</body>
+</html>

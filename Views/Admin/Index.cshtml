@@ -2,32 +2,62 @@
     ViewData["Title"] = "Admin Settings";
 }
 
-<div class="container-fluid">
-
-    <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold">⚙️ Admin Settings</h2>
+<div class="container my-4">
+    <!-- Dashboard Header -->
+    <div class="dashboard-header">
+        <div>
+            <h2 class="fw-bold mb-2">
+                <i class="fas fa-cog me-2"></i>
+                Admin Settings
+            </h2>
+            <p class="text-muted mb-0">Configure system settings and permissions</p>
+        </div>
+        <div class="d-flex gap-3">
+            <div class="stat-badge">
+                <i class="fas fa-shield-alt"></i>
+                <div>
+                    <div class="stat-value">Secure</div>
+                    <div class="stat-label">Configuration</div>
+                </div>
+            </div>
+            <div class="stat-badge">
+                <i class="fas fa-server"></i>
+                <div>
+                    <div class="stat-value">Active</div>
+                    <div class="stat-label">System</div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- User Roles -->
-    <div class="card shadow-sm border-0 rounded-3 mb-4">
-        <div class="card-body">
-            <h5 class="fw-semibold mb-3">👥 Manage User Roles</h5>
-            <form asp-controller="Admin" asp-action="UpdateRoles" method="post" class="row g-3">
+    <div class="modern-card mb-4">
+        <div class="card-header-gradient">
+            <i class="fas fa-users-cog me-2"></i>
+            User Role Management
+        </div>
+        <div class="card-body p-4">
+            <form asp-controller="Admin" asp-action="UpdateRoles" method="post" class="row g-4">
                 <div class="col-md-5">
-                    <input type="text" name="userName" class="form-control" placeholder="Username" required />
+                    <label class="form-label fw-semibold">
+                        <i class="fas fa-user me-1"></i> Username
+                    </label>
+                    <input type="text" name="userName" class="modern-input" placeholder="Enter username" required />
                 </div>
                 <div class="col-md-5">
-                    <select name="role" class="form-select" required>
+                    <label class="form-label fw-semibold">
+                        <i class="fas fa-shield-alt me-1"></i> Assign Role
+                    </label>
+                    <select name="role" class="modern-input" required>
                         <option value="">Select Role...</option>
-                        <option value="Admin">Admin</option>
-                        <option value="Analyst">Analyst</option>
-                        <option value="Viewer">Viewer</option>
+                        <option value="Admin">👑 Admin - Full Access</option>
+                        <option value="Analyst">📊 Analyst - Data Analysis</option>
+                        <option value="Viewer">👁️ Viewer - Read Only</option>
                     </select>
                 </div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn btn-primary w-100">
-                        <i class="fa fa-user-shield"></i> Update
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-gradient w-100">
+                        <i class="fas fa-user-check me-2"></i> Update
                     </button>
                 </div>
             </form>
@@ -35,19 +65,28 @@
     </div>
 
     <!-- API Settings -->
-    <div class="card shadow-sm border-0 rounded-3 mb-4">
-        <div class="card-body">
-            <h5 class="fw-semibold mb-3">🔌 API & Data Source Connections</h5>
-            <form asp-controller="Admin" asp-action="UpdateApi" method="post" class="row g-3">
+    <div class="modern-card mb-4">
+        <div class="card-header-gradient">
+            <i class="fas fa-plug me-2"></i>
+            API & Data Source Configuration
+        </div>
+        <div class="card-body p-4">
+            <form asp-controller="Admin" asp-action="UpdateApi" method="post" class="row g-4">
                 <div class="col-md-5">
-                    <input type="text" name="endpoint" class="form-control" placeholder="API Endpoint" required />
+                    <label class="form-label fw-semibold">
+                        <i class="fas fa-link me-1"></i> API Endpoint
+                    </label>
+                    <input type="text" name="endpoint" class="modern-input" placeholder="https://api.example.com/v1" required />
                 </div>
                 <div class="col-md-5">
-                    <input type="text" name="apiKey" class="form-control" placeholder="API Key" required />
+                    <label class="form-label fw-semibold">
+                        <i class="fas fa-key me-1"></i> API Key
+                    </label>
+                    <input type="text" name="apiKey" class="modern-input" placeholder="Enter your API key" required />
                 </div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn btn-warning w-100">
-                        <i class="fa fa-plug"></i> Save
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-warning-gradient w-100">
+                        <i class="fas fa-save me-2"></i> Save
                     </button>
                 </div>
             </form>
@@ -55,16 +94,26 @@
     </div>
 
     <!-- Alert Thresholds -->
-    <div class="card shadow-sm border-0 rounded-3">
-        <div class="card-body">
-            <h5 class="fw-semibold mb-3">⚡ Sentiment Thresholds</h5>
-            <form asp-controller="Admin" asp-action="UpdateThreshold" method="post" class="row g-3">
+    <div class="modern-card mb-4">
+        <div class="card-header-gradient">
+            <i class="fas fa-sliders-h me-2"></i>
+            Sentiment Alert Thresholds
+        </div>
+        <div class="card-body p-4">
+            <form asp-controller="Admin" asp-action="UpdateThreshold" method="post" class="row g-4">
                 <div class="col-md-10">
-                    <input type="number" step="0.01" name="threshold" class="form-control" placeholder="e.g. 0.25" required />
+                    <label class="form-label fw-semibold">
+                        <i class="fas fa-chart-line me-1"></i> Threshold Value (0.00 - 1.00)
+                    </label>
+                    <input type="number" step="0.01" name="threshold" class="modern-input" placeholder="e.g., 0.25 for 25% threshold" required />
+                    <small class="text-muted">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Set the sensitivity level for sentiment alerts. Lower values trigger more alerts.
+                    </small>
                 </div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn btn-danger w-100">
-                        <i class="fa fa-bell"></i> Set
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-danger-gradient w-100">
+                        <i class="fas fa-bell me-2"></i> Set
                     </button>
                 </div>
             </form>
@@ -74,6 +123,179 @@
     <!-- Feedback Alerts -->
     @if (TempData["Message"] != null)
     {
-        <div class="alert alert-info mt-4">@TempData["Message"]</div>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            @TempData["Message"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
     }
 </div>
+
+<style>
+    .dashboard-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 2rem;
+        border-radius: 16px;
+        color: white;
+        margin-bottom: 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+    }
+
+    .stat-badge {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .stat-badge i {
+        font-size: 1.8rem;
+        opacity: 0.9;
+    }
+
+    .stat-value {
+        font-size: 0.95rem;
+        font-weight: 600;
+        line-height: 1.2;
+    }
+
+    .stat-label {
+        font-size: 0.75rem;
+        opacity: 0.85;
+    }
+
+    .modern-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        border: none;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .modern-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    .card-header-gradient {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1.25rem 1.5rem;
+        font-weight: 600;
+        font-size: 1.1rem;
+        border: none;
+    }
+
+    .modern-input {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 2px solid #e0e7ff;
+        border-radius: 12px;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        background: white;
+    }
+
+    .modern-input:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        background: #f8faff;
+    }
+
+    .modern-input:hover {
+        border-color: #9ca3f5;
+    }
+
+    .form-label {
+        color: #4b5563;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .btn-gradient {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-gradient:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        color: white;
+    }
+
+    .btn-warning-gradient {
+        background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
+    }
+
+    .btn-warning-gradient:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(251, 191, 36, 0.4);
+        color: white;
+    }
+
+    .btn-danger-gradient {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    }
+
+    .btn-danger-gradient:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+        color: white;
+    }
+
+    .alert-success {
+        background: linear-gradient(135deg, rgba(56, 239, 125, 0.1) 0%, rgba(17, 153, 142, 0.1) 100%);
+        border: 2px solid rgba(56, 239, 125, 0.3);
+        border-radius: 12px;
+        color: #0d7a6f;
+        padding: 1rem 1.5rem;
+    }
+
+    .text-muted {
+        display: block;
+        margin-top: 0.5rem;
+        font-size: 0.85rem;
+    }
+
+    @@media (max-width: 768px) {
+        .dashboard-header {
+            flex-direction: column;
+            gap: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-badge {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>

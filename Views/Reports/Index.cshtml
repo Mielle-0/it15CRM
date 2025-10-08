@@ -2,91 +2,148 @@
     ViewData["Title"] = "Reports";
 }
 
-<div class="container-fluid">
-
-    <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold">📑 Reports</h2>
+<div class="container my-4">
+    <!-- Dashboard Header -->
+    <div class="dashboard-header">
+        <div>
+            <h2 class="fw-bold mb-2">
+                <i class="fas fa-file-alt me-2"></i>
+                Reports
+            </h2>
+            <p class="text-muted mb-0">Generate and schedule analytics reports</p>
+        </div>
+        <div class="d-flex gap-3">
+            <div class="stat-badge">
+                <i class="fas fa-file-pdf"></i>
+                <div>
+                    <div class="stat-value">Templates</div>
+                    <div class="stat-label">Available</div>
+                </div>
+            </div>
+            <div class="stat-badge">
+                <i class="fas fa-calendar-check"></i>
+                <div>
+                    <div class="stat-value">Scheduled</div>
+                    <div class="stat-label">Reports</div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Prebuilt Templates -->
-    <div class="card shadow-sm border-0 rounded-3 mb-4">
-        <div class="card-body">
-            <h5 class="fw-semibold mb-3">Prebuilt Templates</h5>
-            <form asp-controller="Reports" asp-action="Generate" method="post" class="row g-3">
+    <div class="modern-card mb-4">
+        <div class="card-header-gradient">
+            <i class="fas fa-copy me-2"></i>
+            Prebuilt Templates
+        </div>
+        <div class="card-body p-4">
+            <form asp-controller="Reports" asp-action="Generate" method="post" class="row g-4">
                 <div class="col-md-4">
-                    <select class="form-select" name="reportType" required>
+                    <label class="form-label fw-semibold">
+                        <i class="fas fa-file-contract me-1"></i> Report Template
+                    </label>
+                    <select class="modern-input" name="reportType" required>
                         <option value="">Select Template...</option>
-                        <option value="Weekly">Weekly Report</option>
-                        <option value="Monthly">Monthly Report</option>
-                        <option value="Quarterly">Quarterly Report</option>
+                        <option value="Weekly">📅 Weekly Report</option>
+                        <option value="Monthly">📊 Monthly Report</option>
+                        <option value="Quarterly">📈 Quarterly Report</option>
                     </select>
                 </div>
                 <div class="col-md-4">
-                    <select class="form-select" name="format" required>
-                        <option value="PDF">PDF</option>
-                        <option value="Excel">Excel</option>
+                    <label class="form-label fw-semibold">
+                        <i class="fas fa-file-export me-1"></i> Export Format
+                    </label>
+                    <select class="modern-input" name="format" required>
+                        <option value="PDF">📄 PDF Document</option>
+                        <option value="Excel">📊 Excel Spreadsheet</option>
                     </select>
                 </div>
-                <div class="col-md-4">
-                    <button class="btn btn-primary w-100" type="submit"><i class="fa fa-download"></i> Generate</button>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button class="btn btn-gradient w-100" type="submit">
+                        <i class="fas fa-download me-2"></i> Generate Report
+                    </button>
                 </div>
             </form>
         </div>
     </div>
 
     <!-- Custom Report Builder -->
-    <div class="card shadow-sm border-0 rounded-3 mb-4">
-        <div class="card-body">
-            <h5 class="fw-semibold mb-3">Custom Report Builder</h5>
-            <form asp-controller="Reports" asp-action="Generate" method="post" class="row g-3">
+    <div class="modern-card mb-4">
+        <div class="card-header-gradient">
+            <i class="fas fa-tools me-2"></i>
+            Custom Report Builder
+        </div>
+        <div class="card-body p-4">
+            <form asp-controller="Reports" asp-action="Generate" method="post" class="row g-4">
                 <input type="hidden" name="reportType" value="Custom" />
                 <div class="col-md-3">
-                    <label class="form-label">Start Date</label>
-                    <input type="date" name="startDate" class="form-control">
+                    <label class="form-label fw-semibold">
+                        <i class="fas fa-calendar-day me-1"></i> Start Date
+                    </label>
+                    <input type="date" name="startDate" class="modern-input">
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label">End Date</label>
-                    <input type="date" name="endDate" class="form-control">
+                    <label class="form-label fw-semibold">
+                        <i class="fas fa-calendar-day me-1"></i> End Date
+                    </label>
+                    <input type="date" name="endDate" class="modern-input">
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label">Format</label>
-                    <select class="form-select" name="format" required>
-                        <option value="PDF">PDF</option>
-                        <option value="Excel">Excel</option>
+                    <label class="form-label fw-semibold">
+                        <i class="fas fa-file-export me-1"></i> Format
+                    </label>
+                    <select class="modern-input" name="format" required>
+                        <option value="PDF">📄 PDF</option>
+                        <option value="Excel">📊 Excel</option>
                     </select>
                 </div>
                 <div class="col-md-3 d-flex align-items-end">
-                    <button class="btn btn-outline-primary w-100" type="submit"><i class="fa fa-cogs"></i> Build Report</button>
+                    <button class="btn btn-gradient-secondary w-100" type="submit">
+                        <i class="fas fa-cogs me-2"></i> Build Report
+                    </button>
                 </div>
             </form>
         </div>
     </div>
 
     <!-- Schedule Reports -->
-    <div class="card shadow-sm border-0 rounded-3">
-        <div class="card-body">
-            <h5 class="fw-semibold mb-3">📆 Schedule Reports</h5>
-            <form asp-controller="Reports" asp-action="Schedule" method="post" class="row g-3">
+    <div class="modern-card mb-4">
+        <div class="card-header-gradient">
+            <i class="fas fa-clock me-2"></i>
+            Schedule Automated Reports
+        </div>
+        <div class="card-body p-4">
+            <form asp-controller="Reports" asp-action="Schedule" method="post" class="row g-4">
                 <div class="col-md-3">
-                    <select class="form-select" name="reportType" required>
-                        <option value="Weekly">Weekly Report</option>
-                        <option value="Monthly">Monthly Report</option>
-                        <option value="Quarterly">Quarterly Report</option>
+                    <label class="form-label fw-semibold">
+                        <i class="fas fa-file-alt me-1"></i> Report Type
+                    </label>
+                    <select class="modern-input" name="reportType" required>
+                        <option value="Weekly">📅 Weekly Report</option>
+                        <option value="Monthly">📊 Monthly Report</option>
+                        <option value="Quarterly">📈 Quarterly Report</option>
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <select class="form-select" name="frequency" required>
-                        <option value="Weekly">Weekly</option>
-                        <option value="Monthly">Monthly</option>
-                        <option value="Quarterly">Quarterly</option>
+                    <label class="form-label fw-semibold">
+                        <i class="fas fa-sync-alt me-1"></i> Frequency
+                    </label>
+                    <select class="modern-input" name="frequency" required>
+                        <option value="Weekly">Every Week</option>
+                        <option value="Monthly">Every Month</option>
+                        <option value="Quarterly">Every Quarter</option>
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <input type="email" name="email" class="form-control" placeholder="Recipient email" required />
+                    <label class="form-label fw-semibold">
+                        <i class="fas fa-envelope me-1"></i> Recipient Email
+                    </label>
+                    <input type="email" name="email" class="modern-input" placeholder="email@example.com" required />
                 </div>
-                <div class="col-md-3">
-                    <button class="btn btn-success w-100" type="submit"><i class="fa fa-envelope"></i> Schedule</button>
+                <div class="col-md-3 d-flex align-items-end">
+                    <button class="btn btn-success w-100" type="submit">
+                        <i class="fas fa-calendar-plus me-2"></i> Schedule
+                    </button>
                 </div>
             </form>
         </div>
@@ -95,6 +152,172 @@
     <!-- Alerts -->
     @if (TempData["Message"] != null)
     {
-        <div class="alert alert-info mt-4">@TempData["Message"]</div>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            @TempData["Message"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
     }
 </div>
+
+<style>
+    .dashboard-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 2rem;
+        border-radius: 16px;
+        color: white;
+        margin-bottom: 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+    }
+
+    .stat-badge {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .stat-badge i {
+        font-size: 1.8rem;
+        opacity: 0.9;
+    }
+
+    .stat-value {
+        font-size: 0.95rem;
+        font-weight: 600;
+        line-height: 1.2;
+    }
+
+    .stat-label {
+        font-size: 0.75rem;
+        opacity: 0.85;
+    }
+
+    .modern-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        border: none;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .modern-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    }
+
+    .card-header-gradient {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1.25rem 1.5rem;
+        font-weight: 600;
+        font-size: 1.1rem;
+        border: none;
+    }
+
+    .modern-input {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 2px solid #e0e7ff;
+        border-radius: 12px;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        background: white;
+    }
+
+    .modern-input:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        background: #f8faff;
+    }
+
+    .modern-input:hover {
+        border-color: #9ca3f5;
+    }
+
+    .form-label {
+        color: #4b5563;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .btn-gradient {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-gradient:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        color: white;
+    }
+
+    .btn-gradient-secondary {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(245, 87, 108, 0.3);
+    }
+
+    .btn-gradient-secondary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(245, 87, 108, 0.4);
+        color: white;
+    }
+
+    .btn-success {
+        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(56, 239, 125, 0.3);
+    }
+
+    .btn-success:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(56, 239, 125, 0.4);
+        background: linear-gradient(135deg, #0d7a6f 0%, #2ec768 100%);
+    }
+
+    .alert-success {
+        background: linear-gradient(135deg, rgba(56, 239, 125, 0.1) 0%, rgba(17, 153, 142, 0.1) 100%);
+        border: 2px solid rgba(56, 239, 125, 0.3);
+        border-radius: 12px;
+        color: #0d7a6f;
+        padding: 1rem 1.5rem;
+    }
+
+    @@media (max-width: 768px) {
+        .dashboard-header {
+            flex-direction: column;
+            gap: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-badge {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>

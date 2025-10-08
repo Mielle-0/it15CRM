@@ -3,117 +3,211 @@
     ViewData["Title"] = "Game List";
 }
 
-<div class="container-fluid">
+<div class="container my-4">
+    <!-- Games Header -->
+    <div class="dashboard-header mb-5">
+        <div class="dashboard-content">
+            <div class="dashboard-text">
+                <div class="dashboard-icon-wrapper">
+                    <i class="fas fa-gamepad dashboard-main-icon"></i>
+                </div>
+                <div>
+                    <h1 class="dashboard-title mb-2">Games Management</h1>
+                    <div class="dashboard-highlights mb-3">
+                        <span class="highlight-item">
+                            <i class="fas fa-database highlight-icon"></i>
+                            <span>Game Library</span>
+                        </span>
+                        <span class="highlight-item">
+                            <i class="fas fa-chart-bar highlight-icon"></i>
+                            <span>Performance Tracking</span>
+                        </span>
+                        <span class="highlight-item">
+                            <i class="fas fa-star highlight-icon"></i>
+                            <span>Review Analytics</span>
+                        </span>
+                        <span class="highlight-item">
+                            <i class="fas fa-filter highlight-icon"></i>
+                            <span>Advanced Filtering</span>
+                        </span>
+                    </div>
+                    <div class="dashboard-stats">
+                        <span class="stat-item">
+                            <i class="fas fa-gamepad me-1"></i>
+                            Total games: <strong>@Model.TotalItems</strong>
+                        </span>
+                        <span class="stat-divider">•</span>
+                        <span class="stat-item">
+                            <i class="fas fa-eye me-1"></i>
+                            Showing: <strong>@Model.Items.Count() of @Model.TotalItems</strong>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Floating decorative elements -->
+        <div class="dashboard-decoration">
+            <div class="floating-shape shape-1"></div>
+            <div class="floating-shape shape-2"></div>
+            <div class="floating-shape shape-3"></div>
+        </div>
+    </div>
     
     <!-- Filters + Search -->
-    <div class="card mb-4 shadow-sm border-0 rounded-3">
+    <div class="modern-card mb-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0">
+                <i class="fas fa-search me-2"></i>
+                Search & Filter Games
+            </h5>
+        </div>
         <div class="card-body">
             <form class="row g-3" method="get" asp-action="Index">
                 <div class="col-md-4">
+                    <label class="form-label">Search Games</label>
                     <input type="text" 
-                        class="form-control" 
+                        class="form-control modern-input" 
                         name="searchTerm"
                         value="@Context.Request.Query["searchTerm"]"
                         placeholder="Search by reviewer or keyword..." />
                 </div>
                 <div class="col-md-2">
-                    <select class="form-select" name="sentiment">
-                        <option value="">Sentiment</option>
+                    <label class="form-label">Sentiment</label>
+                    <select class="form-select modern-input" name="sentiment">
+                        <option value="">All Sentiments</option>
                         <option value="Positive" selected="@(Context.Request.Query["sentiment"] == "Positive")">Positive</option>
                         <option value="Neutral" selected="@(Context.Request.Query["sentiment"] == "Neutral")">Neutral</option>
                         <option value="Negative" selected="@(Context.Request.Query["sentiment"] == "Negative")">Negative</option>
                     </select>
                 </div>
                 <div class="col-md-2">
+                    <label class="form-label">Release Date</label>
                     <input type="date" 
-                        class="form-control" 
+                        class="form-control modern-input" 
                         name="date"
                         value="@Context.Request.Query["date"]" />
                 </div>
-                <div class="col-md-2 text-end">
-                    <button type="submit" class="btn btn-primary w-100">
-                        <i class="fa fa-search"></i> Filter
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-gradient w-100">
+                        <i class="fa fa-search me-2"></i> Filter
                     </button>
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <a asp-action="Index" class="btn btn-outline-secondary w-100">
+                        <i class="fa fa-refresh me-2"></i> Clear
+                    </a>
                 </div>
             </form>
         </div>
     </div>
 
     <!-- Games Table -->
-    <div class="card shadow-sm border-0">
-        <div class="card-body">
-            
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="card-title fw-semibold mb-0">Games Overview</h5>
-                <a asp-action="Create" data-bs-toggle="ajax-modal" 
-                class="btn btn-success">
-                    Add Game
-                </a>
-            </div>
+    <div class="modern-card">
+        <div class="card-header">
+            <h5 class="card-title mb-0">
+                <i class="fas fa-list me-2"></i>
+                Games Overview
+            </h5>
+        </div>
 
+        </div>
+        <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table table-hover table-bordered align-middle" id="gamesTable">
-                    <thead class="table-light">
+                <table class="table table-modern mb-0" id="gamesTable">
+                    <thead>
                         <tr>
-                            <th onclick="sortTable(0)">App ID</th>
-                            <th onclick="sortTable(1)">Game</th>
-                            <th>Genre</th>
-                            <th>Publisher</th>
-                            <th onclick="sortTable(3)">Avg. Sentiment</th>
-                            <th onclick="sortTable(6)">Total Reviews</th>
-                            <th>Release Date</th>
-                            <th class="text-end">Actions</th>
-
-                            
+                            <th onclick="sortTable(0)" class="sortable">
+                                <i class="fas fa-hashtag me-2"></i>App ID
+                            </th>
+                            <th onclick="sortTable(1)" class="sortable">
+                                <i class="fas fa-gamepad me-2"></i>Game
+                            </th>
+                            <th>
+                                <i class="fas fa-tags me-2"></i>Genre
+                            </th>
+                            <th>
+                                <i class="fas fa-building me-2"></i>Publisher
+                            </th>
+                            <th onclick="sortTable(3)" class="sortable text-center">
+                                <i class="fas fa-chart-line me-2"></i>Avg. Sentiment
+                            </th>
+                            <th onclick="sortTable(6)" class="sortable text-center">
+                                <i class="fas fa-star me-2"></i>Total Reviews
+                            </th>
+                            <th>
+                                <i class="fas fa-calendar me-2"></i>Release Date
+                            </th>
+                            <th class="text-center">
+                                <i class="fas fa-cogs me-2"></i>Actions
+                            </th>
                         </tr>
                     </thead>
                     <tbody>   
                         @foreach (var game in Model.Items)
                         {
-                            <tr>
-                                <td>@game.AppId</td>
-                                <td>@game.AppName</td>
-                                <td>@game.Genre</td>
-                                <td>@game.Publisher</td>
+                            <tr class="table-row-hover">
+                                <td class="fw-bold text-primary">@game.AppId</td>
+                                <td>
+                                    <div class="game-info">
+                                        <div class="game-name fw-semibold">@game.AppName</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge bg-light text-dark border">@game.Genre</span>
+                                </td>
+                                <td class="text-muted">@game.Publisher</td>
                                 <td class="text-center">
                                     @if (game.ReviewCount == 0)
                                         {
-                                            <span class="badge bg-secondary">N/A</span>
+                                            <span class="badge bg-secondary">
+                                                <i class="fas fa-minus me-1"></i>N/A
+                                            </span>
                                         }
                                         else if (game.AvgSentiment >= 0.3m) 
                                         {
-                                            <span class="badge bg-success">Positive (@game.AvgSentiment.ToString("0.00"))</span>
+                                            <span class="badge bg-success">
+                                                <i class="fas fa-thumbs-up me-1"></i>Positive
+                                            </span>
                                         }
                                         else if (game.AvgSentiment <= -0.3m) 
                                         {
-                                            <span class="badge bg-danger">Negative (@game.AvgSentiment.ToString("0.00"))</span>
+                                            <span class="badge bg-danger">
+                                                <i class="fas fa-thumbs-down me-1"></i>Negative
+                                            </span>
                                         }
                                         else
                                         {
-                                            <span class="badge bg-warning text-dark">Neutral (@game.AvgSentiment.ToString("0.00"))</span>
+                                            <span class="badge bg-warning text-dark">
+                                                <i class="fas fa-minus me-1"></i>Neutral
+                                            </span>
                                         }
                                 </td>
-                                <td class="text-center">@game.ReviewCount</td>
-                                <td>@game.ReleaseDate?.ToString("yyyy-MM-dd")</td>
-                                <td class="text-end">
-                                    <a asp-action="Details" asp-route-id="@game.GameId"
-                                    data-bs-toggle="ajax-modal"
-                                    class="btn btn-sm btn-outline-primary">
-                                        View
-                                    </a>
-                                    <a asp-action="Edit" asp-route-id="@game.GameId"
-                                    data-bs-toggle="ajax-modal"
-                                    class="btn btn-sm btn-outline-warning ms-2">
-                                        Edit
-                                    </a>
-                                    <a asp-action="Delete" asp-route-id="@game.GameId"
-                                    data-bs-toggle="ajax-modal"
-                                    class="btn btn-danger btn-sm">
-                                    Delete
-                                    </a>
-
-                                
-
+                                <td class="text-center">
+                                    <span class="fw-bold">@game.ReviewCount</span>
+                                </td>
+                                <td class="text-muted">@game.ReleaseDate?.ToString("MMM dd, yyyy")</td>
+                                <td class="text-center">
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <button class="btn btn-outline-primary btn-sm" 
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#viewGameModal" 
+                                                onclick="viewGame(@game.GameId)">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-outline-warning btn-sm" 
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#editGameModal" 
+                                                onclick="editGame(@game.GameId)">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-outline-danger btn-sm" 
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#deleteGameModal" 
+                                                onclick="deleteGame(@game.GameId)">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                         }
@@ -121,66 +215,47 @@
                 </table>
             </div>    
         </div>
+        
+        <!-- Pagination -->
+        @if (Model.TotalPages > 1)
+        {
+            <div class="card-footer">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center mb-0">
+                        @if (Model.PageNumber > 1)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="?page=@(Model.PageNumber - 1)&searchTerm=@Context.Request.Query["searchTerm"]&sentiment=@Context.Request.Query["sentiment"]&date=@Context.Request.Query["date"]">
+                                    <i class="fas fa-chevron-left"></i>
+                                </a>
+                            </li>
+                        }
+
+                        @for (int i = Math.Max(1, Model.PageNumber - 2); i <= Math.Min(Model.TotalPages, Model.PageNumber + 2); i++)
+                        {
+                            <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                                <a class="page-link" href="?page=@i&searchTerm=@Context.Request.Query["searchTerm"]&sentiment=@Context.Request.Query["sentiment"]&date=@Context.Request.Query["date"]">@i</a>
+                            </li>
+                        }
+
+                        @if (Model.PageNumber < Model.TotalPages)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" href="?page=@(Model.PageNumber + 1)&searchTerm=@Context.Request.Query["searchTerm"]&sentiment=@Context.Request.Query["sentiment"]&date=@Context.Request.Query["date"]">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                    
+                    <div class="text-center mt-3 text-muted small">
+                        Showing @((Model.PageNumber - 1) * Model.PageSize + 1) to @Math.Min(Model.PageNumber * Model.PageSize, Model.TotalItems) of @Model.TotalItems games
+                    </div>
+                </nav>
+            </div>
+        }
     </div>
-
-    <!-- Pagination -->
-    <nav aria-label="Page navigation" class="mt-3">
-        <ul class="pagination justify-content-center">
-            @if (Model.PageNumber > 1)
-            {
-                <li class="page-item">
-                    <a class="page-link" asp-action="Index" 
-                    asp-route-page="@(Model.PageNumber - 1)"
-                    asp-route-searchTerm="@Context.Request.Query["searchTerm"]"
-                    asp-route-sentiment="@Context.Request.Query["sentiment"]"
-                    asp-route-date="@Context.Request.Query["date"]">Previous</a>
-                </li>
-            }
-
-            @{
-                var totalPages = (int)Math.Ceiling((decimal)Model.TotalItems / Model.PageSize);
-                var startPage = Math.Max(1, Model.PageNumber - 2);
-                var endPage = Math.Min(totalPages, Model.PageNumber + 2);
-
-                // Ensure we always show 5 pages if possible
-                if (endPage - startPage < 4)
-                {
-                    if (startPage == 1)
-                    {
-                        endPage = Math.Min(5, totalPages);
-                    }
-                    else if (endPage == totalPages)
-                    {
-                        startPage = Math.Max(1, totalPages - 4);
-                    }
-                }
-            }
-
-            @for (int i = startPage; i <= endPage; i++)
-            {
-                <li class="page-item @(Model.PageNumber == i ? "active" : "")">
-                    <a class="page-link" asp-action="Index" asp-route-page="@i"
-                    asp-route-searchTerm="@Context.Request.Query["searchTerm"]"
-                    asp-route-sentiment="@Context.Request.Query["sentiment"]"
-                    asp-route-date="@Context.Request.Query["date"]">@i</a>
-                </li>
-            }
-
-
-            @if (Model.PageNumber < Math.Ceiling((decimal)Model.TotalItems / Model.PageSize))
-            {
-                <li class="page-item">
-                    <a class="page-link" asp-action="Index" asp-route-page="@(Model.PageNumber + 1)"
-                    asp-route-searchTerm="@Context.Request.Query["searchTerm"]"
-                    asp-route-sentiment="@Context.Request.Query["sentiment"]"
-                    asp-route-date="@Context.Request.Query["date"]">Next</a>
-                </li>
-            }
-        </ul>
-    </nav>
-
 </div>
-
 <!-- Modal Container -->
 <div class="modal fade" id="modalContainer" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -189,6 +264,191 @@
 </div>
 
 @section Scripts {
+<style>
+    /* Modern Card Styling */
+    .modern-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+    
+    .modern-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+    }
+    
+    .modern-card .card-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 1.5rem;
+        font-weight: 600;
+    }
+    
+    .modern-card .card-footer {
+        background: rgba(248, 250, 252, 0.8);
+        border: none;
+        padding: 1rem 1.5rem;
+    }
+    
+    /* Modern Input Styling */
+    .modern-input {
+        border: 2px solid rgba(102, 126, 234, 0.1);
+        border-radius: 12px;
+        padding: 12px 16px;
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.9);
+    }
+    
+    .modern-input:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        background: white;
+    }
+    
+    /* Button Styling */
+    .btn-gradient {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-gradient:hover {
+        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        color: white;
+    }
+    
+    .btn-modern {
+        border-radius: 12px;
+        padding: 10px 20px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-modern:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Table Styling */
+    .table-modern {
+        border: none;
+    }
+    
+    .table-modern thead th {
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        border: none;
+        padding: 1.5rem 1rem;
+        font-weight: 600;
+        color: #475569;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+    }
+    
+    .table-modern thead th.sortable {
+        cursor: pointer;
+        user-select: none;
+        position: relative;
+    }
+    
+    .table-modern thead th.sortable:hover {
+        background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+        color: #334155;
+    }
+    
+    .table-modern tbody td {
+        padding: 1.25rem 1rem;
+        border: none;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        vertical-align: middle;
+    }
+    
+    .table-row-hover:hover {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+        transform: scale(1.01);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Game Info Styling */
+    .game-info {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .game-name {
+        color: #1e293b;
+        margin-bottom: 0.25rem;
+    }
+    
+    /* Badge Styling */
+    .badge {
+        font-size: 0.75rem;
+        padding: 0.5rem 0.75rem;
+        border-radius: 8px;
+        font-weight: 600;
+    }
+    
+    /* Pagination Styling */
+    .pagination .page-link {
+        border: 2px solid rgba(102, 126, 234, 0.1);
+        color: #667eea;
+        padding: 10px 15px;
+        margin: 0 2px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+    
+    .pagination .page-link:hover {
+        background: #667eea;
+        border-color: #667eea;
+        color: white;
+        transform: translateY(-2px);
+    }
+    
+    .pagination .page-item.active .page-link {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-color: #667eea;
+    }
+    
+    /* Form Labels */
+    .form-label {
+        font-weight: 600;
+        color: #475569;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+    }
+    
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .dashboard-header {
+            padding: 1.5rem;
+        }
+        
+        .dashboard-title {
+            font-size: 1.8rem;
+        }
+        
+        .table-responsive {
+            border-radius: 0;
+        }
+        
+        .btn-group .btn {
+            padding: 0.25rem 0.5rem;
+        }
+    }
+</style>
+
 <script>
     // Simple table sorter
     function sortTable(n) {
@@ -221,6 +481,36 @@
                 }
             }
         }
+    }
+
+    // View Game Details
+    function viewGame(gameId) {
+        var url = '/Games/Details/' + gameId;
+        $.get(url).done(function (data) {
+            $("#modalContainer .modal-content").html(data);
+            var modal = new bootstrap.Modal(document.getElementById("modalContainer"));
+            modal.show();
+        });
+    }
+
+    // Edit Game
+    function editGame(gameId) {
+        var url = '/Games/Edit/' + gameId;
+        $.get(url).done(function (data) {
+            $("#modalContainer .modal-content").html(data);
+            var modal = new bootstrap.Modal(document.getElementById("modalContainer"));
+            modal.show();
+        });
+    }
+
+    // Delete Game
+    function deleteGame(gameId) {
+        var url = '/Games/Delete/' + gameId;
+        $.get(url).done(function (data) {
+            $("#modalContainer .modal-content").html(data);
+            var modal = new bootstrap.Modal(document.getElementById("modalContainer"));
+            modal.show();
+        });
     }
 
     $(document).on("click", "[data-bs-toggle='ajax-modal']", function (e) {

@@ -3,67 +3,288 @@
     ViewData["Title"] = "Model Management";
 }
 
-<div class="container-fluid">
-
-    <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold">🧠 Model Management</h2>
+<div class="container my-4">
+    <!-- Model Header -->
+    <div class="dashboard-header mb-5">
+        <div class="dashboard-content">
+            <div class="dashboard-text">
+                <div class="dashboard-icon-wrapper">
+                    <i class="fas fa-brain dashboard-main-icon"></i>
+                </div>
+                <div>
+                    <h1 class="dashboard-title mb-2">Model Management</h1>
+                    <div class="dashboard-highlights mb-3">
+                        <span class="highlight-item">
+                            <i class="fas fa-upload highlight-icon"></i>
+                            <span>Model Upload</span>
+                        </span>
+                        <span class="highlight-item">
+                            <i class="fas fa-chart-bar highlight-icon"></i>
+                            <span>Performance Metrics</span>
+                        </span>
+                        <span class="highlight-item">
+                            <i class="fas fa-flask highlight-icon"></i>
+                            <span>Testing Suite</span>
+                        </span>
+                        <span class="highlight-item">
+                            <i class="fas fa-sync highlight-icon"></i>
+                            <span>Version Control</span>
+                        </span>
+                    </div>
+                    <div class="dashboard-stats">
+                        <span class="stat-item">
+                            <i class="fas fa-code-branch me-1"></i>
+                            Version: <strong>@Model.Version</strong>
+                        </span>
+                        <span class="stat-divider">•</span>
+                        <span class="stat-item">
+                            <i class="fas fa-check-circle me-1"></i>
+                            Status: <strong>Active</strong>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Floating decorative elements -->
+        <div class="dashboard-decoration">
+            <div class="floating-shape shape-1"></div>
+            <div class="floating-shape shape-2"></div>
+            <div class="floating-shape shape-3"></div>
+        </div>
     </div>
 
     <!-- Upload Model -->
-    <div class="card shadow-sm border-0 rounded-3 mb-4">
+    <div class="modern-card mb-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0">
+                <i class="fas fa-upload me-2"></i>
+                Upload New Model
+            </h5>
+        </div>
         <div class="card-body">
-            <h5 class="fw-semibold mb-3">Upload New Model</h5>
             <form asp-controller="Model" asp-action="Upload" method="post" enctype="multipart/form-data">
-                <div class="input-group mb-3">
-                    <input type="file" name="modelFile" class="form-control">
-                    <button class="btn btn-primary" type="submit"><i class="fa fa-upload"></i> Upload</button>
+                <div class="input-group">
+                    <input type="file" name="modelFile" class="form-control modern-input">
+                    <button class="btn btn-gradient" type="submit">
+                        <i class="fa fa-upload me-2"></i> Upload Model
+                    </button>
                 </div>
             </form>
             @if (TempData["Message"] != null)
             {
-                <div class="alert alert-info mt-2">@TempData["Message"]</div>
+                <div class="alert alert-info mt-3 modern-alert">
+                    <i class="fas fa-info-circle me-2"></i>@TempData["Message"]
+                </div>
             }
         </div>
     </div>
 
     <!-- Model Metrics -->
-    <div class="card shadow-sm border-0 rounded-3 mb-4">
+    <div class="modern-card mb-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0">
+                <i class="fas fa-chart-line me-2"></i>
+                Current Model Performance
+            </h5>
+        </div>
         <div class="card-body">
-            <h5 class="fw-semibold mb-3">📊 Current Model Performance</h5>
-            <p><strong>Version:</strong> @Model.Version</p>
-            <ul class="list-group list-group-horizontal">
-                <li class="list-group-item flex-fill text-center">
-                    <h6>Precision</h6>
-                    <span class="fw-bold text-success">@((Model.Precision * 100).ToString("F1"))%</span>
-                </li>
-                <li class="list-group-item flex-fill text-center">
-                    <h6>Recall</h6>
-                    <span class="fw-bold text-primary">@((Model.Recall * 100).ToString("F1"))%</span>
-                </li>
-                <li class="list-group-item flex-fill text-center">
-                    <h6>F1 Score</h6>
-                    <span class="fw-bold text-warning">@((Model.F1 * 100).ToString("F1"))%</span>
-                </li>
-            </ul>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="metric-card metric-success">
+                        <div class="metric-icon">
+                            <i class="fas fa-bullseye"></i>
+                        </div>
+                        <div class="metric-content">
+                            <div class="metric-label">Precision</div>
+                            <div class="metric-value">@((Model.Precision * 100).ToString("F1"))%</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="metric-card metric-primary">
+                        <div class="metric-icon">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <div class="metric-content">
+                            <div class="metric-label">Recall</div>
+                            <div class="metric-value">@((Model.Recall * 100).ToString("F1"))%</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="metric-card metric-warning">
+                        <div class="metric-icon">
+                            <i class="fas fa-award"></i>
+                        </div>
+                        <div class="metric-content">
+                            <div class="metric-label">F1 Score</div>
+                            <div class="metric-value">@((Model.F1 * 100).ToString("F1"))%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- Test Model -->
-    <div class="card shadow-sm border-0 rounded-3">
+    <div class="modern-card">
+        <div class="card-header">
+            <h5 class="card-title mb-0">
+                <i class="fas fa-flask me-2"></i>
+                Test Model with Sample Data
+            </h5>
+        </div>
         <div class="card-body">
-            <h5 class="fw-semibold mb-3">🔬 Test Model with Sample Data</h5>
             <div class="input-group mb-3">
-                <input type="text" id="sampleText" class="form-control" placeholder="Enter sample review text...">
-                <button id="testBtn" class="btn btn-outline-primary"><i class="fa fa-play"></i> Test</button>
+                <input type="text" id="sampleText" class="form-control modern-input" placeholder="Enter sample review text...">
+                <button id="testBtn" class="btn btn-gradient">
+                    <i class="fa fa-play me-2"></i> Test Model
+                </button>
             </div>
-            <div id="testResult" class="alert d-none"></div>
+            <div id="testResult" class="alert d-none modern-alert"></div>
         </div>
     </div>
 </div>
 
 <!-- Ajax Script -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<style>
+    .modern-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+    
+    .modern-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+    }
+    
+    .modern-card .card-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 1.5rem;
+        font-weight: 600;
+    }
+    
+    .modern-input {
+        border: 2px solid rgba(102, 126, 234, 0.1);
+        border-radius: 12px;
+        padding: 12px 16px;
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.9);
+    }
+    
+    .modern-input:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        background: white;
+    }
+    
+    .btn-gradient {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-gradient:hover {
+        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        color: white;
+    }
+    
+    .metric-card {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        display: flex;
+        align-items: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+    }
+    
+    .metric-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+    }
+    
+    .metric-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin-right: 1rem;
+    }
+    
+    .metric-success .metric-icon {
+        background: rgba(16, 185, 129, 0.1);
+        color: #10b981;
+    }
+    
+    .metric-primary .metric-icon {
+        background: rgba(102, 126, 234, 0.1);
+        color: #667eea;
+    }
+    
+    .metric-warning .metric-icon {
+        background: rgba(251, 191, 36, 0.1);
+        color: #fbbf24;
+    }
+    
+    .metric-content {
+        flex: 1;
+    }
+    
+    .metric-label {
+        font-size: 0.9rem;
+        color: #64748b;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .metric-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #1e293b;
+    }
+    
+    .modern-alert {
+        border-radius: 12px;
+        border: none;
+        padding: 1rem 1.5rem;
+    }
+    
+    @@media (max-width: 768px) {
+        .dashboard-header {
+            padding: 1.5rem;
+        }
+        
+        .dashboard-title {
+            font-size: 1.8rem;
+        }
+        
+        .metric-value {
+            font-size: 1.5rem;
+        }
+    }
+</style>
+
 <script>
     $("#testBtn").click(function () {
         var text = $("#sampleText").val();

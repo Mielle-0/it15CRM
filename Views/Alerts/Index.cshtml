@@ -3,29 +3,85 @@
     ViewData["Title"] = "Alerts & Notifications";
 }
 
-<div class="container-fluid">
-
-    <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold">🚨 Alerts & Notifications</h2>
-        <div>
-            <button class="btn btn-outline-primary me-2"><i class="fa fa-filter"></i> Filters</button>
-            <button class="btn btn-outline-secondary"><i class="fa fa-cog"></i> Settings</button>
+<div class="container my-4">
+    <!-- Alerts Header -->
+    <div class="dashboard-header mb-5">
+        <div class="dashboard-content">
+            <div class="dashboard-text">
+                <div class="dashboard-icon-wrapper">
+                    <i class="fas fa-bell dashboard-main-icon"></i>
+                </div>
+                <div>
+                    <h1 class="dashboard-title mb-2">Alerts & Notifications</h1>
+                    <div class="dashboard-highlights mb-3">
+                        <span class="highlight-item">
+                            <i class="fas fa-exclamation-circle highlight-icon"></i>
+                            <span>Real-time Monitoring</span>
+                        </span>
+                        <span class="highlight-item">
+                            <i class="fas fa-bell-slash highlight-icon"></i>
+                            <span>Alert Management</span>
+                        </span>
+                        <span class="highlight-item">
+                            <i class="fas fa-tasks highlight-icon"></i>
+                            <span>Task Assignment</span>
+                        </span>
+                        <span class="highlight-item">
+                            <i class="fas fa-chart-bar highlight-icon"></i>
+                            <span>Severity Tracking</span>
+                        </span>
+                    </div>
+                    <div class="dashboard-stats">
+                        <span class="stat-item">
+                            <i class="fas fa-bell me-1"></i>
+                            Total alerts: <strong>@Model.Count()</strong>
+                        </span>
+                        <span class="stat-divider">•</span>
+                        <span class="stat-item">
+                            <i class="fas fa-exclamation-triangle me-1"></i>
+                            High priority: <strong>@Model.Count(a => a.Severity == "High")</strong>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Floating decorative elements -->
+        <div class="dashboard-decoration">
+            <div class="floating-shape shape-1"></div>
+            <div class="floating-shape shape-2"></div>
+            <div class="floating-shape shape-3"></div>
         </div>
     </div>
 
     <!-- Alerts Table -->
-    <div class="card shadow-sm border-0 rounded-3">
-        <div class="card-body">
+    <div class="modern-card">
+        <div class="card-header">
+            <h5 class="card-title mb-0">
+                <i class="fas fa-list me-2"></i>
+                Alert Overview
+            </h5>
+        </div>
+        <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table align-middle table-hover">
-                    <thead class="table-light">
+                <table class="table table-modern mb-0">
+                    <thead>
                         <tr>
-                            <th>Date</th>
-                            <th>Game</th>
-                            <th>Severity</th>
-                            <th>Message</th>
-                            <th>Actions</th>
+                            <th>
+                                <i class="fas fa-calendar me-2"></i>Date & Time
+                            </th>
+                            <th>
+                                <i class="fas fa-gamepad me-2"></i>Game
+                            </th>
+                            <th class="text-center">
+                                <i class="fas fa-exclamation-triangle me-2"></i>Severity
+                            </th>
+                            <th>
+                                <i class="fas fa-comment me-2"></i>Message
+                            </th>
+                            <th class="text-center">
+                                <i class="fas fa-cogs me-2"></i>Actions
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -33,26 +89,38 @@
                         {
                             string severityClass = alert.Severity switch
                             {
-                                "High" => "bg-danger text-white",
-                                "Medium" => "bg-warning text-dark",
-                                "Low" => "bg-info text-dark",
-                                _ => "bg-secondary text-white"
+                                "High" => "bg-danger",
+                                "Medium" => "bg-warning",
+                                "Low" => "bg-info",
+                                _ => "bg-secondary"
+                            };
+                            
+                            string severityIcon = alert.Severity switch
+                            {
+                                "High" => "fas fa-exclamation-circle",
+                                "Medium" => "fas fa-exclamation-triangle",
+                                "Low" => "fas fa-info-circle",
+                                _ => "fas fa-bell"
                             };
 
-                            <tr>
-                                <td>@alert.Date.ToString("yyyy-MM-dd HH:mm")</td>
-                                <td>@alert.Game</td>
-                                <td>
-                                    <span class="badge @severityClass">@alert.Severity</span>
+                            <tr class="table-row-hover">
+                                <td class="text-muted">@alert.Date.ToString("MMM dd, yyyy HH:mm")</td>
+                                <td class="fw-bold text-primary">@alert.Game</td>
+                                <td class="text-center">
+                                    <span class="badge @severityClass">
+                                        <i class="@severityIcon me-1"></i>@alert.Severity
+                                    </span>
                                 </td>
                                 <td>@alert.Message</td>
-                                <td>
-                                    <button class="btn btn-sm btn-outline-success me-1">
-                                        <i class="fa fa-user-plus"></i> Assign
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-danger">
-                                        <i class="fa fa-times"></i> Dismiss
-                                    </button>
+                                <td class="text-center">
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <button class="btn btn-outline-success btn-sm" onclick="assignAlert(@alert.Id)" title="Assign to Team">
+                                            <i class="fa fa-user-plus"></i>
+                                        </button>
+                                        <button class="btn btn-outline-danger btn-sm" onclick="dismissAlert(@alert.Id)" title="Dismiss Alert">
+                                            <i class="fa fa-times"></i>
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                         }
@@ -63,3 +131,121 @@
     </div>
 
 </div>
+
+@section Scripts {
+<script>
+    function assignAlert(alertId) {
+        if (confirm('Assign this alert to your team?')) {
+            $.ajax({
+                url: '/Alerts/Assign/' + alertId,
+                type: 'POST',
+                success: function(response) {
+                    if (response.success) {
+                        alert(response.message || 'Alert assigned successfully!');
+                        location.reload();
+                    } else {
+                        alert('Error: ' + (response.message || 'Failed to assign alert'));
+                    }
+                },
+                error: function(xhr) {
+                    alert('Error assigning alert: ' + (xhr.responseText || xhr.statusText));
+                }
+            });
+        }
+    }
+
+    function dismissAlert(alertId) {
+        if (confirm('Are you sure you want to dismiss this alert?')) {
+            $.ajax({
+                url: '/Alerts/Dismiss/' + alertId,
+                type: 'POST',
+                success: function(response) {
+                    if (response.success) {
+                        alert(response.message || 'Alert dismissed successfully!');
+                        location.reload();
+                    } else {
+                        alert('Error: ' + (response.message || 'Failed to dismiss alert'));
+                    }
+                },
+                error: function(xhr) {
+                    alert('Error dismissing alert: ' + (xhr.responseText || xhr.statusText));
+                }
+            });
+        }
+    }
+</script>
+}
+
+<style>
+    .modern-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+    
+    .modern-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+    }
+    
+    .modern-card .card-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 1.5rem;
+        font-weight: 600;
+    }
+    
+    .table-modern {
+        border: none;
+    }
+    
+    .table-modern thead th {
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        border: none;
+        padding: 1.5rem 1rem;
+        font-weight: 600;
+        color: #475569;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+    }
+    
+    .table-modern tbody td {
+        padding: 1.25rem 1rem;
+        border: none;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        vertical-align: middle;
+    }
+    
+    .table-row-hover:hover {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+        transform: scale(1.01);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .badge {
+        font-size: 0.75rem;
+        padding: 0.5rem 0.75rem;
+        border-radius: 8px;
+        font-weight: 600;
+    }
+    
+    @@media (max-width: 768px) {
+        .dashboard-header {
+            padding: 1.5rem;
+        }
+        
+        .dashboard-title {
+            font-size: 1.8rem;
+        }
+        
+        .btn-group .btn {
+            padding: 0.25rem 0.5rem;
+        }
+    }
+</style>

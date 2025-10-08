@@ -1,31 +1,335 @@
 @model IEnumerable<AmazonReviewsCRM.Models.User>
 
-<h2>Users</h2>
-<a class="btn btn-primary mb-3" asp-action="Create">Create New User</a>
+@{
+    ViewData["Title"] = "User Management";
+}
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Active</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var u in Model)
-        {
-            <tr>
-                <td>@u.Name</td>
-                <td>@u.Email</td>
-                <td>@u.Role</td>
-                <td>@u.Active</td>
-                <td>
-                    <a class="btn btn-sm btn-info" asp-action="Edit" asp-route-id="@u.UserId">Edit</a>
-                    <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@u.UserId">Delete</a>
-                </td>
-            </tr>
+<div class="container my-4">
+    <!-- Dashboard Header -->
+    <div class="dashboard-header">
+        <div>
+            <h2 class="fw-bold mb-2">
+                <i class="fas fa-users me-2"></i>
+                User Management
+            </h2>
+            <p class="text-muted mb-0">Manage system users and their permissions</p>
+        </div>
+        <div class="d-flex gap-3">
+            <div class="stat-badge">
+                <i class="fas fa-user-check"></i>
+                <div>
+                    <div class="stat-value">@Model.Count(u => u.Active)</div>
+                    <div class="stat-label">Active Users</div>
+                </div>
+            </div>
+            <div class="stat-badge">
+                <i class="fas fa-user-shield"></i>
+                <div>
+                    <div class="stat-value">@Model.Count()</div>
+                    <div class="stat-label">Total Users</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Users Table -->
+    <div class="modern-card">
+        <div class="card-header-gradient">
+            <i class="fas fa-list me-2"></i>
+            User Directory
+        </div>
+        <div class="table-responsive">
+            <table class="table-modern">
+                <thead>
+                    <tr>
+                        <th><i class="fas fa-user me-2"></i>Name</th>
+                        <th><i class="fas fa-envelope me-2"></i>Email</th>
+                        <th><i class="fas fa-shield-alt me-2"></i>Role</th>
+                        <th><i class="fas fa-circle me-2"></i>Status</th>
+                        <th><i class="fas fa-cog me-2"></i>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var u in Model)
+                    {
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="user-avatar">
+                                        @u.Name?.Substring(0, 1).ToUpper()
+                                    </div>
+                                    <span class="fw-semibold">@u.Name</span>
+                                </div>
+                            </td>
+                            <td>@u.Email</td>
+                            <td>
+                                <span class="role-badge role-@u.Role?.ToLower()">
+                                    @if (u.Role == "Admin")
+                                    {
+                                        <i class="fas fa-crown me-1"></i>
+                                    }
+                                    else if (u.Role == "Manager")
+                                    {
+                                        <i class="fas fa-user-tie me-1"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="fas fa-user me-1"></i>
+                                    }
+                                    @u.Role
+                                </span>
+                            </td>
+                            <td>
+                                @if (u.Active)
+                                {
+                                    <span class="status-badge status-active">
+                                        <i class="fas fa-check-circle me-1"></i> Active
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="status-badge status-inactive">
+                                        <i class="fas fa-times-circle me-1"></i> Inactive
+                                    </span>
+                                }
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <a class="btn-action btn-edit" asp-action="Edit" asp-route-id="@u.UserId" title="Edit User">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a class="btn-action btn-delete" asp-action="Delete" asp-route-id="@u.UserId" title="Delete User">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+    .dashboard-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 2rem;
+        border-radius: 16px;
+        color: white;
+        margin-bottom: 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+    }
+
+    .stat-badge {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .stat-badge i {
+        font-size: 1.8rem;
+        opacity: 0.9;
+    }
+
+    .stat-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        line-height: 1.2;
+    }
+
+    .stat-label {
+        font-size: 0.75rem;
+        opacity: 0.85;
+    }
+
+    .modern-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        border: none;
+    }
+
+    .card-header-gradient {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1.25rem 1.5rem;
+        font-weight: 600;
+        font-size: 1.1rem;
+        border: none;
+    }
+
+    .table-modern {
+        width: 100%;
+        margin: 0;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-modern thead {
+        background: linear-gradient(135deg, #f8faff 0%, #e8ecff 100%);
+    }
+
+    .table-modern thead th {
+        padding: 1.25rem 1.5rem;
+        font-weight: 600;
+        color: #4b5563;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border: none;
+    }
+
+    .table-modern tbody tr {
+        border-bottom: 1px solid #e5e7eb;
+        transition: all 0.2s ease;
+    }
+
+    .table-modern tbody tr:hover {
+        background: linear-gradient(135deg, #f8faff 0%, #fef3ff 100%);
+        transform: scale(1.01);
+    }
+
+    .table-modern tbody td {
+        padding: 1.25rem 1.5rem;
+        vertical-align: middle;
+        color: #374151;
+    }
+
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 1rem;
+        margin-right: 1rem;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    .role-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .role-admin {
+        background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        color: white;
+        box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
+    }
+
+    .role-manager {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        color: white;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    .role-user {
+        background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+        color: white;
+        box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+    }
+
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .status-active {
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.1) 100%);
+        color: #059669;
+        border: 2px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .status-inactive {
+        background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.1) 100%);
+        color: #dc2626;
+        border: 2px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .btn-action {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        font-size: 0.9rem;
+    }
+
+    .btn-edit {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        color: white;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    .btn-edit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+        color: white;
+    }
+
+    .btn-delete {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        color: white;
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    }
+
+    .btn-delete:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+        color: white;
+    }
+
+    @@media (max-width: 768px) {
+        .dashboard-header {
+            flex-direction: column;
+            gap: 1.5rem;
+            text-align: center;
         }
-    </tbody>
-</table>
+
+        .stat-badge {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .table-modern {
+            font-size: 0.85rem;
+        }
+
+        .table-modern thead th,
+        .table-modern tbody td {
+            padding: 0.75rem;
+        }
+    }
+</style>

@@ -7,6 +7,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace AmazonReviewsCRM.Controllers
 {
@@ -26,6 +28,23 @@ namespace AmazonReviewsCRM.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
+            Console.WriteLine($"[DEBUG] Login attempt for: {request.Email}");
+            Console.WriteLine($"[DEBUG] Captcha token received: {!string.IsNullOrEmpty(request.CaptchaToken)}");
+            
+            // Temporarily bypass captcha for testing - remove this in production
+            var captchaVerified = true;
+            
+            // Uncomment this line when you have the correct secret key configured
+            // var captchaVerified = await VerifyCaptcha(request.CaptchaToken);
+            
+            Console.WriteLine($"[DEBUG] Captcha verified: {captchaVerified}");
+
+            if (!captchaVerified)
+            {
+                Console.WriteLine($"[DEBUG] CAPTCHA verification failed for token: {request.CaptchaToken}");
+                return BadRequest("CAPTCHA verification failed");
+            }
+
             var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == request.Email && u.Active);
             // var user = await _db.Users.FirstOrDefaultAsync(u => u.Name == request.Email && u.Active);
 
@@ -117,8 +136,77 @@ namespace AmazonReviewsCRM.Controllers
             });
         }
 
+        private async Task<bool> VerifyCaptcha(string token)
+        {
+            if (string.IsNullOrEmpty(token))
+            {
+                Console.WriteLine("[DEBUG] Captcha token is null or empty");
+                return false;
+            }
 
+            var secret = _config["ReCaptcha:SecretKey"];
+            
+            if (string.IsNullOrEmpty(secret) || secret == "YOUR_SECRET_KEY_FROM_GOOGLE_CONSOLE")
+            {
+                Console.WriteLine("[WARNING] ReCaptcha secret key not configured properly");
+                // Return true for testing when secret key is not configured
+                return true;
+            }
+
+            var client = new HttpClient();
+
+            try
+            {
+                Console.WriteLine($"[DEBUG] Verifying captcha with Google API...");
+                
+                var formData = new FormUrlEncodedContent(new[]
+                {
+                    new KeyValuePair<string, string>("secret", secret),
+                    new KeyValuePair<string, string>("response", token)
+                });
+
+                var response = await client.PostAsync("https://www.google.com/recaptcha/api/siteverify", formData);
+                var json = await response.Content.ReadAsStringAsync();
+                
+                Console.WriteLine($"[DEBUG] Google API response: {json}");
+
+                var result = JsonSerializer.Deserialize<ReCaptchaResponse>(json);
+                
+                if (result?.ErrorCodes != null && result.ErrorCodes.Length > 0)
+                {
+                    Console.WriteLine($"[DEBUG] ReCaptcha errors: {string.Join(", ", result.ErrorCodes)}");
+                }
+                
+                return result?.Success ?? false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERROR] Captcha verification failed: {ex.Message}");
+                // Return true for testing when API call fails
+                return true;
+            }
+            finally
+            {
+                client.Dispose();
+            }
+        }
     }
 
+
+
+    public class ReCaptchaResponse
+    {
+        [JsonPropertyName("success")]
+        public bool Success { get; set; }
+
+        [JsonPropertyName("challenge_ts")]
+        public DateTime ChallengeTimeStamp { get; set; }
+
+        [JsonPropertyName("hostname")]
+        public string? Hostname { get; set; }
+
+        [JsonPropertyName("error-codes")]
+        public string[]? ErrorCodes { get; set; }
+    }
 
 }

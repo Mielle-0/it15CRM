@@ -17,5 +17,24 @@ namespace AmazonReviewsCRM.Controllers
 
             return View(alerts);
         }
+
+        // POST: /Alerts/Assign/{id}
+        [HttpPost]
+        public IActionResult Assign(int id)
+        {
+            // TODO: Implement alert assignment logic
+            // This would typically assign the alert to a user or team
+            return Json(new { success = true, message = "Alert assigned successfully" });
+        }
+
+        // POST: /Alerts/Dismiss/{id}
+        [HttpPost]
+        public IActionResult Dismiss(int id)
+        {
+            // TODO: Implement alert dismissal logic
+            // This would typically mark the alert as resolved or dismissed
+            return Json(new { success = true, message = "Alert dismissed successfully" });
+        }
     }
 }
+

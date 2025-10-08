@@ -34,18 +34,73 @@
     var datasetsJson = JsonSerializer.Serialize(datasets);
 }
 
-<div class="container-fluid">
+<div class="container my-4">
+    <!-- Trends Header -->
+    <div class="dashboard-header mb-5">
+        <div class="dashboard-content">
+            <div class="dashboard-text">
+                <div class="dashboard-icon-wrapper">
+                    <i class="fas fa-chart-line dashboard-main-icon"></i>
+                </div>
+                <div>
+                    <h1 class="dashboard-title mb-2">Sentiment Trends</h1>
+                    <div class="dashboard-highlights mb-3">
+                        <span class="highlight-item">
+                            <i class="fas fa-chart-area highlight-icon"></i>
+                            <span>Trend Analysis</span>
+                        </span>
+                        <span class="highlight-item">
+                            <i class="fas fa-exclamation-triangle highlight-icon"></i>
+                            <span>Anomaly Detection</span>
+                        </span>
+                        <span class="highlight-item">
+                            <i class="fas fa-calendar-alt highlight-icon"></i>
+                            <span>Time Series</span>
+                        </span>
+                        <span class="highlight-item">
+                            <i class="fas fa-filter highlight-icon"></i>
+                            <span>Advanced Filtering</span>
+                        </span>
+                    </div>
+                    <div class="dashboard-stats">
+                        <span class="stat-item">
+                            <i class="fas fa-chart-line me-1"></i>
+                            Tracking: <strong>@Model.Games.Count games</strong>
+                        </span>
+                        <span class="stat-divider">•</span>
+                        <span class="stat-item">
+                            <i class="fas fa-clock me-1"></i>
+                            Period: <strong>@Model.Labels.Count months</strong>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Floating decorative elements -->
+        <div class="dashboard-decoration">
+            <div class="floating-shape shape-1"></div>
+            <div class="floating-shape shape-2"></div>
+            <div class="floating-shape shape-3"></div>
+        </div>
+    </div>
 
     <!-- Filters + Search -->
-    <div class="card mb-4 shadow-sm border-0 rounded-3">
+    <div class="modern-card mb-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0">
+                <i class="fas fa-filter me-2"></i>
+                Filter Trends
+            </h5>
+        </div>
         <div class="card-body">
-            <form class="row g-3 align-items-end" method="get" asp-action="Index">
+            <form class="row g-3" method="get" asp-action="Index">
 
                 <!-- Search App Name -->
                 <div class="col-md-3">
                     <label class="form-label">App Name</label>
                     <input type="text"
-                        class="form-control"
+                        class="form-control modern-input"
                         name="searchApp"
                         value="@Context.Request.Query["searchApp"]"
                         placeholder="Search by app name..." />
@@ -55,14 +110,14 @@
                 <div class="col-md-3">
                     <label class="form-label">Start Date</label>
                     <input type="month"
-                        class="form-control"
+                        class="form-control modern-input"
                         name="startDate"
                         value="@Context.Request.Query["startDate"]" />
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">End Date</label>
                     <input type="month"
-                        class="form-control"
+                        class="form-control modern-input"
                         name="endDate"
                         value="@Context.Request.Query["endDate"]" />
                 </div>
@@ -76,24 +131,30 @@
                         min="0" max="1" step="0.05"
                         value="@Context.Request.Query["minSentiment"].FirstOrDefault() ?? "0""
                         oninput="this.nextElementSibling.value = this.value" />
-                    <output>@(Context.Request.Query["minSentiment"].FirstOrDefault() ?? "0")</output>
+                    <output class="mt-1 d-block text-center fw-bold text-primary">@(Context.Request.Query["minSentiment"].FirstOrDefault() ?? "0")</output>
                 </div>
 
                 <!-- Review Count Filter -->
                 <div class="col-md-3">
                     <label class="form-label">Min Reviews</label>
                     <input type="number"
-                        class="form-control"
+                        class="form-control modern-input"
                         name="minReviews"
                         value="@Context.Request.Query["minReviews"].FirstOrDefault() ?? "0""
                         min="0" />
                 </div>
 
                 <!-- Submit Button -->
-                <div class="col-md-2 text-end">
-                    <button type="submit" class="btn btn-primary w-100">
-                        <i class="fa fa-search"></i> Filter
+                <div class="col-md-3 d-flex align-items-end">
+                    <button type="submit" class="btn btn-gradient w-100">
+                        <i class="fa fa-search me-2"></i> Apply Filters
                     </button>
+                </div>
+                
+                <div class="col-md-3 d-flex align-items-end">
+                    <a asp-action="Index" class="btn btn-outline-secondary w-100">
+                        <i class="fa fa-refresh me-2"></i> Clear
+                    </a>
                 </div>
             </form>
         </div>
@@ -101,23 +162,44 @@
 
 
     <!-- Chart Card -->
-    <div class="card shadow-sm border-0 rounded-3 mb-4">
+    <div class="modern-card mb-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0">
+                <i class="fas fa-chart-area me-2"></i>
+                Sentiment Trends Over Time
+            </h5>
+        </div>
         <div class="card-body">
             <canvas id="sentimentTrendsChart" height="120"></canvas>
         </div>
     </div>
 
     <!-- Anomalies Section -->
-    <div class="card shadow-sm border-0 rounded-3">
-        <div class="card-body">
-            <h5 class="fw-semibold mb-3">⚠️ Detected Anomalies</h5>
+    <div class="modern-card">
+        <div class="card-header">
+            <h5 class="card-title mb-0">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                Detected Anomalies
+            </h5>
+        </div>
+        <div class="card-body p-0">
             <ul class="list-group list-group-flush">
                 @foreach (var anomaly in Model.Anomalies)
                 {
-                    <li class="list-group-item">
-                        <strong>@anomaly.Game</strong> - @anomaly.Month:
-                        <span class="text-danger fw-bold">@anomaly.Value</span>
-                        <em> (@anomaly.Note)</em>
+                    <li class="list-group-item anomaly-item">
+                        <div class="d-flex align-items-center">
+                            <div class="anomaly-icon">
+                                <i class="fas fa-exclamation-circle text-danger"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <strong class="text-primary">@anomaly.Game</strong>
+                                <span class="text-muted ms-2">@anomaly.Month</span>
+                                <div class="mt-1">
+                                    <span class="badge bg-danger">@anomaly.Value</span>
+                                    <em class="text-muted ms-2">@anomaly.Note</em>
+                                </div>
+                            </div>
+                        </div>
                     </li>
                 }
             </ul>
@@ -127,6 +209,108 @@
 
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+    /* Modern Card Styling */
+    .modern-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+    
+    .modern-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+    }
+    
+    .modern-card .card-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 1.5rem;
+        font-weight: 600;
+    }
+    
+    .modern-input {
+        border: 2px solid rgba(102, 126, 234, 0.1);
+        border-radius: 12px;
+        padding: 12px 16px;
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.9);
+    }
+    
+    .modern-input:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        background: white;
+    }
+    
+    .btn-gradient {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-gradient:hover {
+        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        color: white;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: #475569;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+    }
+    
+    .anomaly-item {
+        padding: 1.25rem;
+        transition: all 0.3s ease;
+        border: none;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    .anomaly-item:hover {
+        background: linear-gradient(135deg, rgba(239, 68, 68, 0.05) 0%, rgba(239, 68, 68, 0.02) 100%);
+        transform: translateX(5px);
+    }
+    
+    .anomaly-icon {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(239, 68, 68, 0.1);
+        border-radius: 50%;
+        margin-right: 1rem;
+    }
+    
+    .anomaly-icon i {
+        font-size: 1.2rem;
+    }
+    
+    @@media (max-width: 768px) {
+        .dashboard-header {
+            padding: 1.5rem;
+        }
+        
+        .dashboard-title {
+            font-size: 1.8rem;
+        }
+    }
+</style>
+
 <script>
     const ctx = document.getElementById('sentimentTrendsChart').getContext('2d');
 

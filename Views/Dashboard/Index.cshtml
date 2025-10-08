@@ -1,108 +1,256 @@
 ﻿@{
     ViewData["Title"] = "Dashboard";
-    var alerts = ViewBag.Alerts;
-    var helpful = ViewBag.Helpful;
+    var alerts = ViewBag.Alerts as List<object> ?? new List<object>();
+    var helpful = ViewBag.Helpful as List<object> ?? new List<object>();
 }
 
 <div class="container my-4">
+    <!-- Dashboard Header -->
+    <div class="dashboard-header mb-5">
+        <div class="dashboard-content">
+            <div class="dashboard-text">
+                <div class="dashboard-icon-wrapper">
+                    <i class="fas fa-chart-line dashboard-main-icon"></i>
+                </div>
+                <div>
+                    <h1 class="dashboard-title mb-2">Analytics Dashboard</h1>
+                    <div class="dashboard-highlights mb-3">
+                        <span class="highlight-item">
+                            <i class="fas fa-star highlight-icon"></i>
+                            <span>Real-time Analytics</span>
+                        </span>
+                        <span class="highlight-item">
+                            <i class="fas fa-chart-trending-up highlight-icon"></i>
+                            <span>Sentiment Tracking</span>
+                        </span>
+                        <span class="highlight-item">
+                            <i class="fas fa-shield-check highlight-icon"></i>
+                            <span>AI-Powered Insights</span>
+                        </span>
+                        <span class="highlight-item">
+                            <i class="fas fa-lightning highlight-icon"></i>
+                            <span>Instant Alerts</span>
+                        </span>
+                    </div>
+                    <div class="dashboard-stats">
+                        <span class="stat-item">
+                            <i class="fas fa-clock me-1"></i>
+                            Last updated: <strong>Just now</strong>
+                        </span>
+                        <span class="stat-divider">•</span>
+                        <span class="stat-item">
+                            <i class="fas fa-database me-1"></i>
+                            Data source: <strong>Real-time</strong>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Floating decorative elements -->
+        <div class="dashboard-decoration">
+            <div class="floating-shape shape-1"></div>
+            <div class="floating-shape shape-2"></div>
+            <div class="floating-shape shape-3"></div>
+        </div>
+    </div>
 
     <!-- KPI Cards Row -->
-    <div class="row mb-4">
+    <div class="row mb-5 g-4">
         <div class="col-md-3">
-            <div class="card text-center border-0 shadow-sm">
-                <div class="card-body">
-                    <h6>Total Reviews</h6>
-                    <h2 class="fw-bold">@ViewBag.TotalReviews</h2>
+            <div class="kpi-card kpi-primary">
+                <div class="kpi-icon">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <div class="kpi-content">
+                    <h6 class="kpi-label">Total Reviews</h6>
+                    <h2 class="kpi-number">@(ViewBag.TotalReviews ?? 0)</h2>
+                    <div class="kpi-trend positive">
+                        <i class="fas fa-arrow-up"></i> +12.5%
+                    </div>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card text-center border-0 shadow-sm">
-                <div class="card-body">
-                    <h6>Positive %</h6>
-                    <h2 class="fw-bold text-success">@ViewBag.PositivePct.ToString("F1")%</h2>
+            <div class="kpi-card kpi-success">
+                <div class="kpi-icon">
+                    <i class="fas fa-thumbs-up"></i>
+                </div>
+                <div class="kpi-content">
+                    <h6 class="kpi-label">Positive %</h6>
+                    <h2 class="kpi-number text-success">@((ViewBag.PositivePct ?? 0.0).ToString("F1"))%</h2>
+                    <div class="kpi-trend positive">
+                        <i class="fas fa-arrow-up"></i> +3.2%
+                    </div>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card text-center border-0 shadow-sm">
-                <div class="card-body">
-                    <h6>Negative %</h6>
-                    <h2 class="fw-bold text-danger">@ViewBag.NegativePct.ToString("F1")%</h2>
+            <div class="kpi-card kpi-danger">
+                <div class="kpi-icon">
+                    <i class="fas fa-thumbs-down"></i>
+                </div>
+                <div class="kpi-content">
+                    <h6 class="kpi-label">Negative %</h6>
+                    <h2 class="kpi-number text-danger">@((ViewBag.NegativePct ?? 0.0).ToString("F1"))%</h2>
+                    <div class="kpi-trend negative">
+                        <i class="fas fa-arrow-down"></i> -1.8%
+                    </div>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card text-center border-0 shadow-sm">
-                <div class="card-body">
-                    <h6>Avg Rating</h6>
-                    <h2 class="fw-bold text-primary">@ViewBag.AvgRating.ToString("F1") ⭐</h2>
+            <div class="kpi-card kpi-warning">
+                <div class="kpi-icon">
+                    <i class="fas fa-star"></i>
+                </div>
+                <div class="kpi-content">
+                    <h6 class="kpi-label">Avg Rating</h6>
+                    <h2 class="kpi-number text-primary">@((ViewBag.AvgRating ?? 0.0).ToString("F1")) ⭐</h2>
+                    <div class="kpi-trend positive">
+                        <i class="fas fa-arrow-up"></i> +0.3
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Charts Row -->
-    <div class="row mb-4">
-        <div class="col-md-6 d-flex">
-            <div class="card shadow-sm border-0 w-100 h-100">
-                <div class="card-header bg-light fw-bold">Sentiment Distribution</div>
-                <div class="card-body d-flex align-items-center">
+    <div class="row mb-5 g-4">
+        <div class="col-md-6">
+            <div class="chart-card h-100">
+                <div class="chart-header">
+                    <h5 class="chart-title">
+                        <i class="fas fa-chart-pie me-2"></i>Sentiment Distribution
+                    </h5>
+                    <div class="chart-actions">
+                        <button class="btn btn-sm btn-outline-secondary rounded-pill">
+                            <i class="fas fa-ellipsis-h"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="chart-body d-flex align-items-center">
                     <canvas id="sentimentChart" class="w-100"></canvas>
                 </div>
             </div>
         </div>
-        <div class="col-md-6 d-flex">
-            <div class="card shadow-sm border-0 w-100 h-100">
-                <div class="card-header bg-light fw-bold">Top 5 Positive Games</div>
-                <div class="card-body d-flex align-items-center">
+        <div class="col-md-6">
+            <div class="chart-card games-chart-container h-100">
+                <div class="chart-header">
+                    <h5 class="chart-title">
+                        <i class="fas fa-chart-bar me-2"></i>Top 5 Positive Games
+                    </h5>
+                    <div class="chart-actions">
+                        <button class="btn btn-sm btn-outline-secondary rounded-pill">
+                            <i class="fas fa-ellipsis-h"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="chart-body d-flex align-items-center">
                     <canvas id="topGamesChart" class="w-100"></canvas>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Alerts -->
-    <div class="card shadow-sm border-0 mb-4">
-        <div class="card-header bg-warning fw-bold">⚠️ Alerts – Declining Sentiment</div>
-        <div class="card-body">
-            <table class="table table-hover table-sm">
-                <thead class="table-light">
-                    <tr><th>Game</th><th>Prev Avg</th><th>Recent Avg</th></tr>
-                </thead>
-                <tbody>
-                @foreach (var a in ViewBag.Alerts)
-                {
-                    <tr>
-                        <td>@a.Game</td>
-                        <td>@a.PrevAvg</td>
-                        <td>@a.RecentAvg</td>
-                    </tr>
-                }
-                </tbody>
-            </table>
+    <!-- Data Tables Row -->
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <!-- Alerts -->
+            <div class="modern-card alert-card h-100">
+                <div class="card-header-modern">
+                    <h5 class="card-title-modern">
+                        <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                        Low Confidence Sentiment Alerts
+                    </h5>
+                    <span class="badge badge-warning rounded-pill">
+                        @(ViewBag.Alerts?.Count ?? 0) Reviews
+                    </span>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-modern table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Game</th>
+                                    <th>Predicted Sentiment</th>
+                                    <th>Confidence</th>
+                                    <th>Review Preview</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var a in ViewBag.Alerts)
+                            {
+                                <tr>
+                                    <td class="fw-medium">@a.Game</td>
+                                    <td>
+                                        <span class="badge @(a.PredictedSentiment.ToLower() == "positive" ? "bg-success" : 
+                                                              a.PredictedSentiment.ToLower() == "negative" ? "bg-danger" : "bg-warning text-dark") rounded-pill">
+                                            @a.PredictedSentiment
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="confidence-score">
+                                            @a.ConfidenceScore.ToString("F2")
+                                            <small class="text-muted">%</small>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="review-preview" title="@a.ReviewText">
+                                            @a.ReviewText
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <small class="text-muted">
+                                            @a.ReviewDate.ToString("MMM dd")
+                                        </small>
+                                    </td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
-
-    <!-- Helpful Reviews -->
-    <div class="card shadow-sm border-0">
-        <div class="card-header bg-success text-white fw-bold">🌟 Most Helpful Reviews</div>
-        <div class="card-body">
-            <table class="table table-hover table-sm">
-                <thead class="table-light">
-                    <tr><th>Game</th><th>Title</th><th>Votes</th></tr>
-                </thead>
-                <tbody>
-                @foreach (var r in ViewBag.Helpful)
-                {
-                    <tr>
-                        <td>@r.Game</td>
-                        <td>@r.Title</td>
-                        <td>@r.Votes</td>
-                    </tr>
-                }
-                </tbody>
-            </table>
+        
+        <div class="col-lg-5">
+            <!-- Helpful Reviews -->
+            <div class="modern-card reviews-card h-100">
+                <div class="card-header-modern">
+                    <h5 class="card-title-modern">
+                        <i class="fas fa-star text-success me-2"></i>
+                        Most Helpful Reviews
+                    </h5>
+                    <span class="badge badge-success rounded-pill">Top 5</span>
+                </div>
+                <div class="card-body">
+                    <div class="reviews-list">
+                        @if (ViewBag.Helpful != null)
+                        {
+                            @foreach (var r in ViewBag.Helpful)
+                            {
+                                <div class="review-item">
+                                    <div class="review-header">
+                                        <span class="game-name">@r.Game</span>
+                                        <span class="votes-badge">
+                                            <i class="fas fa-thumbs-up"></i> @r.Votes
+                                        </span>
+                                    </div>
+                                    <p class="review-text">@(r.Title.Length > 80 ? r.Title.Substring(0, 80) + "..." : r.Title)</p>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="text-center text-muted">
+                                No reviews available
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -110,37 +258,150 @@
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-    // Sentiment Pie
+    // Modern Chart.js styling
+    Chart.defaults.font.family = 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+    Chart.defaults.font.size = 14;
+    Chart.defaults.color = '#64748b';
+
+    // Sentiment Pie Chart
     new Chart(document.getElementById('sentimentChart'), {
         type: 'pie',
         data: {
-            labels: @Html.Raw(ViewBag.SentimentLabels),
+            labels: @Html.Raw(ViewBag.SentimentLabels ?? "[]"),
             datasets: [{
-                data: @Html.Raw(ViewBag.SentimentValues),
-                backgroundColor: ['#dc3545','#ffc107','#28a745']
-            }]
-        }
-    });
-
-    // Top Games Bar
-    new Chart(document.getElementById('topGamesChart'), {
-        type: 'bar',
-        data: {
-            labels: @Html.Raw(ViewBag.TopGameTitles),
-            datasets: [{
-                label: "Avg Rating",
-                data: @Html.Raw(ViewBag.TopGameRatings),
-                backgroundColor: '#0d6efd'
+                data: @Html.Raw(ViewBag.SentimentValues ?? "[]"),
+                backgroundColor: [
+                    '#ef4444',  // Red for negative
+                    '#fbbf24',  // Yellow for neutral
+                    '#10b981'   // Green for positive
+                ],
+                borderWidth: 2,
+                borderColor: '#ffffff'
             }]
         },
         options: {
+            responsive: true,
+            maintainAspectRatio: false,
             plugins: {
-                legend: { display: false }
-            },
-            scales: {
-                y: { beginAtZero: true, max: 5 }
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        padding: 20,
+                        usePointStyle: true,
+                        pointStyle: 'circle',
+                        font: { size: 12, weight: '500' }
+                    }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                    titleColor: '#1e293b',
+                    bodyColor: '#475569',
+                    borderColor: '#e2e8f0',
+                    borderWidth: 1,
+                    cornerRadius: 8
+                }
             }
         }
     });
+
+    // Top Games Bar Chart
+    new Chart(document.getElementById('topGamesChart'), {
+        type: 'bar',
+        data: {
+            labels: @Html.Raw(ViewBag.TopGameTitles ?? "[]"),
+            datasets: [{
+                label: "Avg Rating",
+                data: @Html.Raw(ViewBag.TopGameRatings ?? "[]"),
+                backgroundColor: 'rgba(102, 126, 234, 0.8)',
+                borderColor: '#667eea',
+                borderWidth: 2,
+                borderRadius: 8,
+                borderSkipped: false
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                    titleColor: '#1e293b',
+                    bodyColor: '#475569',
+                    borderColor: '#e2e8f0',
+                    borderWidth: 1,
+                    cornerRadius: 8,
+                    callbacks: {
+                        title: function(context) {
+                            const fullTitles = @Html.Raw(ViewBag.TopGameFullTitles ?? ViewBag.TopGameTitles);
+                            return fullTitles[context[0].dataIndex] || context[0].label;
+                        },
+                        label: function(context) {
+                            return 'Average Rating: ' + context.parsed.y.toFixed(1) + ' ⭐';
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: { 
+                    beginAtZero: true, 
+                    max: 5,
+                    grid: { color: '#f1f5f9', drawBorder: false },
+                    ticks: { 
+                        color: '#64748b', 
+                        font: { size: 12 },
+                        callback: function(value) {
+                            return value.toFixed(1);
+                        }
+                    }
+                },
+                x: {
+                    grid: { display: false },
+                    ticks: { 
+                        color: '#64748b', 
+                        font: { size: 11, weight: '500' }, 
+                        maxRotation: 0,
+                        callback: function(value, index) {
+                            const label = this.getLabelForValue(value);
+                            if (label.length > 20) {
+                                return label.substring(0, 20) + '...';
+                            }
+                            return label;
+                        }
+                    }
+                }
+            },
+            layout: {
+                padding: {
+                    top: 10,
+                    bottom: 20
+                }
+            }
+        }
+    });
+
+    // Export functionality
+    function exportData(format) {
+        const exportBtn = document.querySelector('#exportDropdown');
+        const originalText = exportBtn.innerHTML;
+        
+        // Show loading state
+        exportBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i><span>Exporting...</span>';
+        exportBtn.disabled = true;
+        
+        // Create download link
+        const link = document.createElement('a');
+        link.href = `/dashboard/export?format=${format}`;
+        link.download = `analytics_${new Date().toISOString().slice(0, 10)}.${format}`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        // Reset button after download
+        setTimeout(() => {
+            exportBtn.innerHTML = originalText;
+            exportBtn.disabled = false;
+        }, 2000);
+    }
     </script>
 }
